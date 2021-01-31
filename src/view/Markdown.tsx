@@ -5,6 +5,6 @@ const Title = styled.h1`
   color: #fff;
 `;
 
-export default function About() {
-  return <Title>About</Title>;
+export default function Markdown() {
+  return <Title>Markdown</Title>;
 }
