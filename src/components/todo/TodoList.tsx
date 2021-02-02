@@ -8,11 +8,12 @@ import {
   TableWrapper,
 } from '../../style/todo.style';
 import { TodoMeta } from '../../typings/todo';
+import Editor from '../Editor';
 
 const { Column } = Table;
 
 const renderDesc = (record: TodoMeta) => {
-  return <p>{record.desc}</p>;
+  return <Editor initValue={record.desc} />;
 };
 
 const finishedList: TodoMeta[] = [];
