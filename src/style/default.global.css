@@ -1,7 +1,19 @@
 @import '~antd/dist/antd.css';
 @import '~react-day-picker/lib/style.css';
 
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin-top: 0;
+  margin-bottom: 0;
+  color: rgb(236, 236, 236);
+}
+
 .DayPicker-wrapper,
+.DayPicker-Day,
 .DayPicker-NavButton {
   outline: none;
 }
@@ -16,15 +28,15 @@
   transition: all 0.3s;
 }
 
+.DayPicker-Day--outside {
+  color: #181d1d;
+  background-color: rgba(128, 128, 128, 0.1);
+}
+
 .DayPicker-Day--today {
   font-weight: normal;
   background-color: #44ad63;
   color: #fff;
-}
-
-.DayPicker-Day--outside {
-  color: #181d1d;
-  background-color: rgba(128, 128, 128, 0.1);
 }
 
 .DayPicker-Day--selected:not(.DayPicker-Day--disabled):not(.DayPicker-Day--outside) {
@@ -61,4 +73,97 @@
 .ant-list-item:hover {
   background: rgba(178, 228, 79, 0.5);
   cursor: pointer;
+}
+
+.ant-badge-status-day {
+  position: absolute;
+  bottom: -12px;
+  left: 9px;
+}
+
+.ant-badge-status-dot {
+  width: 4px;
+  height: 4px;
+}
+
+.ant-table {
+  color: rgb(236, 236, 236);
+}
+
+.ant-table-tbody > tr > td {
+  border-bottom: 1px solid rgba(255, 253, 238, 0.2);
+}
+
+.ant-table-tbody > tr.ant-table-row:hover > td,
+.ant-table-tbody > tr.ant-table-row-selected > td {
+  background-color: #272b31;
+  color: rgb(236, 236, 236);
+  border-bottom: 1px solid rgba(255, 253, 238, 0.2);
+}
+
+.ant-table-row-selected {
+  color: #272b31;
+}
+
+.ant-table,
+.ant-checkbox-inner,
+.ant-table-row-expand-icon,
+tr.ant-table-expanded-row > td,
+tr.ant-table-expanded-row:hover > td,
+.ant-table-tbody > tr.ant-table-placeholder:hover > td {
+  background-color: #272b31;
+}
+
+.ant-table-tbody > tr.ant-table-placeholder > td {
+  border-bottom: 0px;
+}
+
+.ant-checkbox-wrapper:hover .ant-checkbox-inner,
+.ant-checkbox:hover .ant-checkbox-inner,
+.ant-checkbox-input:focus + .ant-checkbox-inner,
+.ant-checkbox-checked .ant-checkbox-inner {
+  border-color: #44ad63;
+}
+
+.ant-checkbox-checked .ant-checkbox-inner {
+  background-color: #44ad63;
+}
+
+.ant-checkbox-inner::after {
+  top: 44%;
+  left: 16%;
+}
+
+.ant-checkbox-checked::after {
+  border-color: #44ad63;
+}
+
+.ant-page-header-heading-title {
+  color: rgb(236, 236, 236);
+}
+
+.ant-page-header-heading-sub-title {
+  color: rgba(236, 236, 236, 0.45);
+}
+
+.ant-input {
+  background-color: rgba(255, 253, 238, 0.1);
+  border-color: rgba(255, 253, 238, 0.1);
+  color: #fff;
+}
+
+.ant-btn:hover,
+.ant-btn:focus {
+  border-color: #40a9ff !important;
+  background-color: rgba(255, 253, 238, 0.2) !important;
+}
+
+.ant-input-group-addon,
+.ant-input-search-button {
+  background-color: rgba(255, 253, 238, 0.1);
+  border-color: rgba(255, 253, 238, 0.1);
+}
+
+.anticon-search {
+  color: rgb(236, 236, 236);
 }
