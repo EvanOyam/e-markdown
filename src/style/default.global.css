@@ -11,7 +11,7 @@ h5,
 h6 {
   margin-top: 0;
   margin-bottom: 0;
-  color: rgb(236, 236, 236);
+  color: #fbf8f5;
 }
 
 ::-webkit-scrollbar {
@@ -93,7 +93,7 @@ h6 {
 }
 
 .ant-table {
-  color: rgb(236, 236, 236);
+  color: #fbf8f5;
 }
 
 .ant-table-tbody > tr > td {
@@ -103,7 +103,7 @@ h6 {
 .ant-table-tbody > tr.ant-table-row:hover > td,
 .ant-table-tbody > tr.ant-table-row-selected > td {
   background-color: #272b31;
-  color: rgb(236, 236, 236);
+  color: #fbf8f5;
   border-bottom: 1px solid rgba(255, 253, 238, 0.2);
 }
 
@@ -145,7 +145,7 @@ tr.ant-table-expanded-row:hover > td,
 }
 
 .ant-page-header-heading-title {
-  color: rgb(236, 236, 236);
+  color: #fbf8f5;
 }
 
 .ant-page-header-heading-sub-title {
@@ -171,18 +171,18 @@ tr.ant-table-expanded-row:hover > td,
 }
 
 .anticon-search {
-  color: rgb(236, 236, 236);
+  color: #fbf8f5;
 }
 
 .EasyMDEContainer > .CodeMirror,
 .EasyMDEContainer > .editor-toolbar {
   background-color: rgba(255, 253, 238, 0.1);
-  color: rgb(236, 236, 236);
+  color: #fbf8f5;
 }
 
 .CodeMirror-cursor {
-  color: rgb(236, 236, 236);
-  border-color: rgb(236, 236, 236);
+  color: #fbf8f5;
+  border-color: #fbf8f5;
 }
 
 .editor-toolbar button.active,
@@ -214,4 +214,37 @@ tr.ant-table-expanded-row:hover > td,
 
 .editor-preview-active {
   padding: 14px !important;
+}
+
+.ant-tree-directory {
+  background-color: #2e2e2e;
+  color: #fbf8f5;
+  font-size: 16px;
+}
+
+.ant-tree.ant-tree-directory .ant-tree-treenode:hover::before {
+  background-color: #414747;
+  border-radius: 4px;
+}
+
+.ant-tree.ant-tree-directory .ant-tree-treenode-selected:hover::before,
+.ant-tree.ant-tree-directory .ant-tree-treenode-selected::before {
+  background-color: rgba(178, 228, 79, 0.5);
+  border-radius: 4px;
+}
+
+.ant-tree-title,
+.ant-tree .ant-tree-node-content-wrapper .ant-tree-iconEle {
+  line-height: 36px;
+}
+
+.ant-tree-switcher {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ant-tree-switcher .ant-tree-switcher-icon,
+.ant-tree-switcher .ant-select-tree-switcher-icon {
+  font-size: 14px;
 }

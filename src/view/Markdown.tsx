@@ -1,10 +1,18 @@
-import styled from '@emotion/styled';
 import React from 'react';
-
-const Title = styled.h1`
-  color: #fff;
-`;
+import MarkdownMenu from '../components/markdown/MarkdownMenu';
+import {
+  MarkdownMenuWrapper,
+  MarkdownPanel,
+  MarkdownWrapper,
+} from '../style/markdown.style';
 
 export default function Markdown() {
-  return <Title>Markdown</Title>;
+  return (
+    <MarkdownWrapper>
+      <MarkdownMenuWrapper>
+        <MarkdownMenu />
+      </MarkdownMenuWrapper>
+      <MarkdownPanel />
+    </MarkdownWrapper>
+  );
 }

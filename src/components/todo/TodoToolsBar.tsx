@@ -27,8 +27,8 @@ export default function TodoToolsBar(props: TodoToolsBarProps) {
             onSearch={onSearch}
             style={{ width: 200 }}
           />
-          <PlusOutlined style={{ fontSize: '20px' }} />
-          <QuestionOutlined style={{ fontSize: '20px' }} />
+          <PlusOutlined style={{ fontSize: '20px', cursor: 'pointer' }} />
+          <QuestionOutlined style={{ fontSize: '20px', cursor: 'pointer' }} />
         </ToolsBarActionWrapper>
       }
     />

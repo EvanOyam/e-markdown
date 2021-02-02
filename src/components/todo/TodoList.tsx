@@ -11,7 +11,6 @@ import { TodoMeta } from '../../typings/todo';
 import Editor from '../Editor';
 
 // todo fix 分屏时闪烁的 bug
-// todo 本地存储编辑器 icon 样式
 
 const { Column } = Table;
 
@@ -124,7 +123,9 @@ export default function TodoList() {
       const tableH = tableRef.current?.clientHeight || 0;
       const textH = textRef.current?.clientHeight || 0;
       const scrollH = tableH - textH;
-      setTableScrollH(scrollH);
+      if (scrollH) {
+        setTableScrollH(scrollH);
+      }
     });
     return () => {
       window.removeEventListener('resize', () => {});
