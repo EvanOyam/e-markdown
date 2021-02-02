@@ -10,5 +10,11 @@ export default function Editor(props: EditorProps) {
   const handleChange = (value: string) => {
     setTextValue(value);
   };
-  return <SimpleMDE onChange={handleChange} value={textValue} />;
+  return (
+    <SimpleMDE
+      options={{ autoDownloadFontAwesome: false }}
+      onChange={handleChange}
+      value={textValue}
+    />
+  );
 }
