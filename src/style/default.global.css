@@ -13,6 +13,10 @@ h6 {
   color: rgb(236, 236, 236);
 }
 
+::-webkit-scrollbar {
+  visibility: hidden;
+}
+
 .DayPicker-wrapper,
 .DayPicker-Day,
 .DayPicker-NavButton {
@@ -183,4 +187,30 @@ tr.ant-table-expanded-row:hover > td,
 .editor-toolbar button.active,
 .editor-toolbar button:hover i {
   color: #272b31;
+}
+
+.CodeMirror-fullscreen,
+.editor-toolbar.fullscreen,
+.editor-toolbar.fullscreen::before,
+.editor-toolbar.fullscreen::after {
+  background: #272b31 !important;
+}
+
+.CodeMirror-fullscreen {
+  border: 0px !important;
+  border-top: 1px solid rgba(255, 253, 238, 0.2) !important;
+}
+
+.editor-preview {
+  background-color: #272b31 !important;
+}
+
+.editor-preview-side {
+  border: 0px !important;
+  border-top: 1px solid rgba(255, 253, 238, 0.2) !important;
+  border-left: 1px solid rgba(255, 253, 238, 0.2) !important;
+}
+
+.editor-preview-active {
+  padding: 14px !important;
 }
