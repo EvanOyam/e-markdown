@@ -10,8 +10,6 @@ import {
 import { TodoMeta } from '../../typings/todo';
 import Editor from '../Editor';
 
-// todo fix 分屏时闪烁的 bug
-
 const { Column } = Table;
 
 const renderDesc = (record: TodoMeta) => {
@@ -111,6 +109,14 @@ export default function TodoList() {
   const textRef = useRef<HTMLHeadingElement>(null);
   const tableRef = useRef<HTMLDivElement>(null);
   const [tableScrollH, setTableScrollH] = useState(0);
+  const resizeListener = () => {
+    const tableH = tableRef.current?.clientHeight || 0;
+    const textH = textRef.current?.clientHeight || 0;
+    const scrollH = tableH - textH;
+    if (scrollH) {
+      setTableScrollH(scrollH);
+    }
+  };
   useEffect(() => {
     const tableH = tableRef.current?.offsetHeight || 0;
     const textH = textRef.current?.offsetHeight || 0;
@@ -119,16 +125,9 @@ export default function TodoList() {
   }, []);
 
   useEffect(() => {
-    window.addEventListener('resize', () => {
-      const tableH = tableRef.current?.clientHeight || 0;
-      const textH = textRef.current?.clientHeight || 0;
-      const scrollH = tableH - textH;
-      if (scrollH) {
-        setTableScrollH(scrollH);
-      }
-    });
+    window.addEventListener('resize', resizeListener);
     return () => {
-      window.removeEventListener('resize', () => {});
+      window.removeEventListener('resize', resizeListener);
     };
   }, []);
 

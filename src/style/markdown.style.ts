@@ -9,7 +9,7 @@ export const MarkdownWrapper = styled.div`
 export const MarkdownMenuWrapper = styled.div`
   background-color: #2e2e2e;
   padding: 8px;
-  min-width: 268px;
+  min-width: 284px;
   max-width: 500px;
 `;
 
@@ -19,4 +19,18 @@ export const MarkdownPanel = styled.div`
   display: flex;
   flex-direction: column;
   align-items: stretch;
+  overflow-y: scroll;
+  height: 100vh;
+  padding: 16px;
+  padding-right: 0;
+`;
+
+export const MarkdownToolsbarWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  color: #fbf8f5;
+  margin-bottom: 12px;
+  .anticon-plus {
+    margin: 0 6px;
+  }
 `;

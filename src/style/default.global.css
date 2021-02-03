@@ -197,6 +197,16 @@ tr.ant-table-expanded-row:hover > td,
   background: #272b31 !important;
 }
 
+.simple-mde-without-border > .EasyMDEContainer > .editor-toolbar {
+  border: 0;
+}
+
+.simple-mde-without-border > .EasyMDEContainer > .CodeMirror {
+  border-left: 0;
+  border-right: 0;
+  border-bottom: 0;
+}
+
 .CodeMirror-fullscreen {
   border: 0px !important;
   border-top: 1px solid rgba(255, 253, 238, 0.2) !important;
@@ -214,6 +224,7 @@ tr.ant-table-expanded-row:hover > td,
 
 .editor-preview-active {
   padding: 14px !important;
+  overflow: hidden;
 }
 
 .ant-tree-directory {
@@ -247,4 +258,8 @@ tr.ant-table-expanded-row:hover > td,
 .ant-tree-switcher .ant-tree-switcher-icon,
 .ant-tree-switcher .ant-select-tree-switcher-icon {
   font-size: 14px;
+}
+
+.site-tree-search-value {
+  color: #e44259;
 }

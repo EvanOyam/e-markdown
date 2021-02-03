@@ -1,6 +1,14 @@
-import React, { useState } from 'react';
-import { Tree } from 'antd';
+import React, { useState, ChangeEvent, ReactElement } from 'react';
+import useDeepCompareEffect from 'use-deep-compare-effect';
+import { Tree, Input } from 'antd';
+import { PlusOutlined, QuestionOutlined } from '@ant-design/icons';
+import {
+  MarkdownMenuWrapper,
+  MarkdownToolsbarWrapper,
+} from '../../style/markdown.style';
+import { TreeDataType, TreeKey, TreeMeta } from '../../typings/markdown';
 
+const { Search } = Input;
 const { DirectoryTree } = Tree;
 
 const data = [
@@ -43,21 +51,127 @@ const data = [
   },
 ];
 
+const generateList = (
+  rawData: TreeDataType<string>[],
+  listData: TreeMeta<string>[]
+) => {
+  for (let i = 0; i < rawData.length; i++) {
+    const node = rawData[i];
+    const { key, title } = node;
+    listData.push({ key, title });
+    if (node.children) {
+      generateList(node.children, listData);
+    }
+  }
+};
+
+const getParentKey = (key: TreeKey, tree: TreeDataType<string>[]): TreeKey => {
+  let parentKey: TreeKey = '';
+  for (let i = 0; i < tree.length; i++) {
+    const node = tree[i];
+    if (node.children) {
+      if (node.children.some((item) => item.key === key)) {
+        parentKey = node.key;
+      } else if (getParentKey(key, node.children)) {
+        parentKey = getParentKey(key, node.children);
+      }
+    }
+  }
+  return parentKey;
+};
+
 export default function MarkdownMenu() {
   const [treeData, setTreeData] = useState(data);
-  const onSelect = (keys: any, info: any) => {
-    console.log('Trigger Select', keys, info);
+  const [searchValue, setSearchValue] = useState('');
+  const [listData, setListData] = useState([] as TreeMeta<string>[]);
+  const [expandedKeys, setExpandedKeys] = useState([] as TreeKey[]);
+
+  useDeepCompareEffect(() => {
+    const initListData: TreeMeta<string>[] = [];
+    generateList(treeData, initListData);
+    setListData(initListData);
+  }, [treeData]);
+
+  const onExpand = (keys: TreeKey[]) => {
+    setExpandedKeys(keys);
   };
 
-  const onExpand = () => {
-    console.log('Trigger Expand');
+  const onChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    if (!value) {
+      setSearchValue('');
+      setExpandedKeys([]);
+    } else {
+      const keys = listData
+        .map((item) => {
+          if (item.title.indexOf(value) > -1) {
+            return getParentKey(item.key, treeData);
+          }
+          return '';
+        })
+        .filter((item, i, self) => item && self.indexOf(item) === i);
+      setSearchValue(value);
+      setExpandedKeys(keys);
+    }
   };
+
+  const handleTreeData = (rawTreeData: TreeDataType<string>[]) =>
+    rawTreeData.map(
+      (item): TreeDataType<ReactElement> => {
+        const index = item.title.indexOf(searchValue);
+        const beforeStr = item.title.substr(0, index);
+        const afterStr = item.title.substr(index + searchValue.length);
+        const title =
+          index > -1 ? (
+            <span>
+              {beforeStr}
+              <span className="site-tree-search-value">{searchValue}</span>
+              {afterStr}
+            </span>
+          ) : (
+            <span>{item.title}</span>
+          );
+        if (item.children) {
+          return {
+            title,
+            key: item.key,
+            isLeaf: item.isLeaf,
+            children: handleTreeData(item.children),
+          };
+        }
+        return {
+          title,
+          isLeaf: item.isLeaf,
+          key: item.key,
+        };
+      }
+    );
+
+  const createMarkdown = () => {
+    const testData = {
+      title: 'test',
+      key: `test-${+new Date()}`,
+      isLeaf: true,
+    };
+    const newTreeData = treeData.concat(testData);
+    setTreeData(newTreeData);
+  };
+
   return (
-    <DirectoryTree
-      multiple
-      onSelect={onSelect}
-      onExpand={onExpand}
-      treeData={treeData}
-    />
+    <MarkdownMenuWrapper>
+      <MarkdownToolsbarWrapper>
+        <Search placeholder="Search" onChange={onChange} />
+        <PlusOutlined
+          onClick={createMarkdown}
+          style={{ fontSize: '18px', cursor: 'pointer' }}
+        />
+        <QuestionOutlined style={{ fontSize: '18px', cursor: 'pointer' }} />
+      </MarkdownToolsbarWrapper>
+      <DirectoryTree
+        expandedKeys={expandedKeys}
+        onExpand={onExpand}
+        treeData={handleTreeData(treeData)}
+      />
+    </MarkdownMenuWrapper>
   );
 }

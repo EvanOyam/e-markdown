@@ -1,18 +1,15 @@
 import React from 'react';
+import Editor from '../components/Editor';
 import MarkdownMenu from '../components/markdown/MarkdownMenu';
-import {
-  MarkdownMenuWrapper,
-  MarkdownPanel,
-  MarkdownWrapper,
-} from '../style/markdown.style';
+import { MarkdownPanel, MarkdownWrapper } from '../style/markdown.style';
 
 export default function Markdown() {
   return (
     <MarkdownWrapper>
-      <MarkdownMenuWrapper>
-        <MarkdownMenu />
-      </MarkdownMenuWrapper>
-      <MarkdownPanel />
+      <MarkdownMenu />
+      <MarkdownPanel>
+        <Editor initValue="" maxHeight="80vh" withoutBorder />
+      </MarkdownPanel>
     </MarkdownWrapper>
   );
 }
