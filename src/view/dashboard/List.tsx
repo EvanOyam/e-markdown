@@ -3,7 +3,7 @@ import { Draggable } from 'react-beautiful-dnd';
 import { Card } from 'antd';
 import { CheckCircleTwoTone, QuestionCircleTwoTone } from '@ant-design/icons';
 import { TodoCardListType } from '../../typings/dashboard';
-import { CardWrapper } from './dashboard';
+import { CardWrapper } from './dashboard.style';
 
 const renderIcon = (finished: boolean) => {
   return finished ? (

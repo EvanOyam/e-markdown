@@ -281,3 +281,23 @@ tr.ant-table-expanded-row:hover > td,
 .ant-card-bordered {
   border: 0;
 }
+
+.rechart-custom-tooltip {
+  background-color: #414747;
+  color: rgb(236, 236, 236);
+  border-radius: 4px;
+}
+
+.rechart-custom-tooltip-title {
+  padding: 0;
+  margin: 0;
+  padding: 8px;
+  border-bottom: 1px solid rgba(255, 253, 238, 0.2);
+}
+
+.rechart-custom-tooltip-desc,
+.rechart-custom-tooltip-title-noborder {
+  padding: 0;
+  margin: 0;
+  padding: 8px;
+}

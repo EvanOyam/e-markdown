@@ -1,6 +1,29 @@
 import React from 'react';
-import { ChartPanelWrapper } from './dashboard';
+import {
+  ChartPanelWrapper,
+  ChartTitle,
+  ChartOuterWrapper,
+} from './dashboard.style';
+import TodoChart from './TodoChart';
+import MarkdownChart from './MarkdownChart';
+import MindmapChart from './MindmapChart';
 
+// todo 优化渲染代码
 export default function ChartPanel() {
-  return <ChartPanelWrapper />;
+  return (
+    <ChartPanelWrapper>
+      <ChartOuterWrapper>
+        <ChartTitle>任务趋势</ChartTitle>
+        <TodoChart />
+      </ChartOuterWrapper>
+      <ChartOuterWrapper>
+        <ChartTitle>笔记趋势</ChartTitle>
+        <MarkdownChart />
+      </ChartOuterWrapper>
+      <ChartOuterWrapper>
+        <ChartTitle>脑图趋势</ChartTitle>
+        <MindmapChart />
+      </ChartOuterWrapper>
+    </ChartPanelWrapper>
+  );
 }

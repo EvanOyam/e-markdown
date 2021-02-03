@@ -14,8 +14,8 @@ export const TodoPanelWrapper = styled.div`
   flex-direction: column;
 `;
 
-export const TodoPanelTitle = styled.h2`
-  margin-bottom: 8px;
+export const TodoPanelTitle = styled.h3`
+  margin-bottom: 12px;
 `;
 
 export const TodoPanelList = styled.div`
@@ -32,6 +32,26 @@ export const CardWrapper = styled.div<CardWrapperType>`
 `;
 
 export const ChartPanelWrapper = styled.div`
+  padding: 12px 24px 24px 24px;
   background: #272b31;
+  height: 100vh;
+  overflow-y: scroll;
   flex: 1;
+`;
+
+export const ChartOuterWrapper = styled.div`
+  /* background-color: yellowgreen; */
+`;
+
+export const ChartTitle = styled.h3`
+  padding: 12px;
+  margin-top: 12px;
+  width: 560px;
+  background-color: #2d2938;
+`;
+
+export const ChartWrapper = styled.div`
+  height: 300px;
+  width: 560px;
+  background-color: #201d27;
 `;

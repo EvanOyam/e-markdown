@@ -4,10 +4,11 @@ import { HashRouter as Router, Switch, Route } from 'react-router-dom';
 import { ConfigProvider } from 'antd';
 import { BulbTwoTone } from '@ant-design/icons';
 import Menu from './components/Menu';
-import About from './view/about/Index';
 import Dashboard from './view/dashboard/Index';
-import Markdown from './view/markdown/Index';
 import Todo from './view/todo/Index';
+import Markdown from './view/markdown/Index';
+import Mindmap from './view/mindmap/Index';
+import About from './view/about/Index';
 import { EmptyLayout, BaseLayout, ContainerLayout } from './style/layout.style';
 
 const customizeRenderEmpty = () => (
@@ -26,6 +27,7 @@ export default function App() {
           <Router>
             <Switch>
               <Route path="/about" component={About} />
+              <Route path="/mindmap" component={Mindmap} />
               <Route path="/todo" component={Todo} />
               <Route path="/markdown" component={Markdown} />
               <Route path="/" component={Dashboard} />

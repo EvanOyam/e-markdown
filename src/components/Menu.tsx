@@ -3,6 +3,7 @@ import {
   DashboardFilled,
   DiffFilled,
   FileMarkdownFilled,
+  BulbFilled,
   InfoCircleFilled,
 } from '@ant-design/icons';
 import { MenuLayout, Icon, MenuItem, ActivedMark } from '../style/layout.style';
@@ -28,6 +29,12 @@ const menuItemList = [
   },
   {
     id: 4,
+    text: '脑图',
+    icon: <BulbFilled />,
+    color: '#5aabda',
+  },
+  {
+    id: 5,
     text: '关于',
     icon: <InfoCircleFilled />,
     color: '#F07E4A',
@@ -38,6 +45,7 @@ enum RouterEnum {
   '/' = 1,
   '/todo',
   '/markdown',
+  '/mindmap',
   '/about',
 }
 

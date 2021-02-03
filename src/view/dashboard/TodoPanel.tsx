@@ -2,7 +2,11 @@ import React, { useState } from 'react';
 import { DragDropContext, Droppable, DropResult } from 'react-beautiful-dnd';
 import List from './List';
 import { TodoCardType } from '../../typings/dashboard';
-import { TodoPanelWrapper, TodoPanelTitle, TodoPanelList } from './dashboard';
+import {
+  TodoPanelWrapper,
+  TodoPanelTitle,
+  TodoPanelList,
+} from './dashboard.style';
 
 const mockTodoCardData = [
   {
