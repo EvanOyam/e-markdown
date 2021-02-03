@@ -18,6 +18,8 @@ const renderDesc = (record: TodoMeta) => {
 
 const finishedList: TodoMeta[] = [];
 
+// todo list 用 memo 渲染
+
 const targetList = [
   {
     key: 1,

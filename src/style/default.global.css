@@ -15,7 +15,7 @@ h6 {
 }
 
 ::-webkit-scrollbar {
-  visibility: hidden;
+  display: none;
 }
 
 .DayPicker-wrapper,
@@ -262,4 +262,22 @@ tr.ant-table-expanded-row:hover > td,
 
 .site-tree-search-value {
   color: #e44259;
+}
+
+.ant-card-type-inner .ant-card-head {
+  background-color: #2d2938;
+  color: rgb(236, 236, 236);
+}
+
+.ant-card-type-inner .ant-card-body {
+  background-color: #201d27;
+  color: rgb(236, 236, 236);
+}
+
+.ant-card-type-inner {
+  background-color: #2d2938;
+}
+
+.ant-card-bordered {
+  border: 0;
 }

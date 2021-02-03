@@ -22,7 +22,6 @@ export const MarkdownPanel = styled.div`
   overflow-y: scroll;
   height: 100vh;
   padding: 16px;
-  padding-right: 0;
 `;
 
 export const MarkdownToolsbarWrapper = styled.div`

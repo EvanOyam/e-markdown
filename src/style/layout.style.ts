@@ -62,6 +62,7 @@ export const Icon = styled.span`
 
 export const MenuItem = styled.div<MenuItemProps>`
   height: 64px;
+  width: 74px;
   font-size: 12px;
   color: #fff;
   background-color: ${(props) => (props.actived ? '#2E2E2E' : '#222323')};

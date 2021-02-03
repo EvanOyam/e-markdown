@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import {
-  HomeFilled,
+  DashboardFilled,
   DiffFilled,
   FileMarkdownFilled,
   InfoCircleFilled,
@@ -10,25 +10,25 @@ import { MenuLayout, Icon, MenuItem, ActivedMark } from '../style/layout.style';
 const menuItemList = [
   {
     id: 1,
-    text: 'Home',
-    icon: <HomeFilled />,
+    text: '看板',
+    icon: <DashboardFilled />,
     color: '#727CA9',
   },
   {
     id: 2,
-    text: 'Todo',
+    text: '任务',
     icon: <DiffFilled />,
     color: '#E44259',
   },
   {
     id: 3,
-    text: 'Markdown',
+    text: '笔记',
     icon: <FileMarkdownFilled />,
     color: '#4CAF4F',
   },
   {
     id: 4,
-    text: 'About',
+    text: '关于',
     icon: <InfoCircleFilled />,
     color: '#F07E4A',
   },

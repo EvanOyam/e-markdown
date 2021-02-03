@@ -5,7 +5,7 @@ import { ConfigProvider } from 'antd';
 import { BulbTwoTone } from '@ant-design/icons';
 import Menu from './components/Menu';
 import About from './view/about/Index';
-import Home from './view/home/Index';
+import Dashboard from './view/dashboard/Index';
 import Markdown from './view/markdown/Index';
 import Todo from './view/todo/Index';
 import { EmptyLayout, BaseLayout, ContainerLayout } from './style/layout.style';
@@ -28,7 +28,7 @@ export default function App() {
               <Route path="/about" component={About} />
               <Route path="/todo" component={Todo} />
               <Route path="/markdown" component={Markdown} />
-              <Route path="/" component={Home} />
+              <Route path="/" component={Dashboard} />
             </Switch>
           </Router>
         </ContainerLayout>
