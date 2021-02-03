@@ -6,7 +6,7 @@ import {
   CodeTwoTone,
   EditTwoTone,
 } from '@ant-design/icons';
-import { ClassifyLayout } from '../../style/todo.style';
+import { ClassifyLayout } from './todo.style';
 import { ClassifyProps } from '../../typings/todo';
 
 const tagList = [

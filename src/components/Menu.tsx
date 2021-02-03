@@ -5,7 +5,7 @@ import {
   FileMarkdownFilled,
   InfoCircleFilled,
 } from '@ant-design/icons';
-import { MenuLayout, Icon, MenuItem, ActivedMark } from '../style/menu.style';
+import { MenuLayout, Icon, MenuItem, ActivedMark } from '../style/layout.style';
 
 const menuItemList = [
   {

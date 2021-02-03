@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import Classify from '../components/todo/Classify';
-import CustomDayPicker from '../components/todo/CustomDayPicker';
-import TodoList from '../components/todo/TodoList';
-import TodoToolsBar from '../components/todo/TodoToolsBar';
-import { TodoWrapper, TodoMenu, TodoPanel } from '../style/todo.style';
+import Classify from './Classify';
+import CustomDayPicker from './CustomDayPicker';
+import TodoList from './TodoList';
+import TodoToolsBar from './TodoToolsBar';
+import { TodoWrapper, TodoMenu, TodoPanel } from './todo.style';
 
 export default function Todo() {
   const [selectedDay, setSelectedDay] = useState<Date>();

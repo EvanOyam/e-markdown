@@ -6,9 +6,9 @@ import {
   IconWrapper,
   TodoListWrapper,
   TableWrapper,
-} from '../../style/todo.style';
+} from './todo.style';
 import { TodoMeta } from '../../typings/todo';
-import Editor from '../Editor';
+import Editor from '../../components/Editor';
 
 const { Column } = Table;
 

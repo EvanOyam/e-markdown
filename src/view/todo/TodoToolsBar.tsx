@@ -1,7 +1,7 @@
 import React from 'react';
 import { PageHeader, Input } from 'antd';
 import { PlusOutlined, QuestionOutlined } from '@ant-design/icons';
-import { ToolsBarActionWrapper } from '../../style/todo.style';
+import { ToolsBarActionWrapper } from './todo.style';
 
 const { Search } = Input;
 

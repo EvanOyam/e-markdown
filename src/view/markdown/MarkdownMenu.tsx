@@ -2,10 +2,7 @@ import React, { useState, ChangeEvent, ReactElement } from 'react';
 import useDeepCompareEffect from 'use-deep-compare-effect';
 import { Tree, Input } from 'antd';
 import { PlusOutlined, QuestionOutlined } from '@ant-design/icons';
-import {
-  MarkdownMenuWrapper,
-  MarkdownToolsbarWrapper,
-} from '../../style/markdown.style';
+import { MarkdownMenuWrapper, MarkdownToolsbarWrapper } from './markdown.style';
 import { TreeDataType, TreeKey, TreeMeta } from '../../typings/markdown';
 
 const { Search } = Input;

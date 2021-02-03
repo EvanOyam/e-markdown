@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import DayPicker from 'react-day-picker';
 import { Badge } from 'antd';
-import { DayPickerLayout, DayStyle } from '../../style/todo.style';
+import { DayPickerLayout, DayStyle } from './todo.style';
 import { CustomDayPickerProps } from '../../typings/todo';
 
 export default function CustomDayPicker(props: CustomDayPickerProps) {
