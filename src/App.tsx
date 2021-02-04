@@ -10,6 +10,7 @@ import Markdown from './view/markdown/Index';
 import Mindmap from './view/mindmap/Index';
 import About from './view/about/Index';
 import { EmptyLayout, BaseLayout, ContainerLayout } from './style/layout.style';
+import '@fortawesome/fontawesome-free/js/all';
 
 const customizeRenderEmpty = () => (
   <EmptyLayout>
