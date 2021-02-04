@@ -247,6 +247,8 @@
     "electron-log": "^4.2.4",
     "electron-updater": "^4.3.4",
     "history": "^5.0.0",
+    "markmap-lib": "^0.11.2",
+    "markmap-view": "^0.2.2",
     "moment": "^2.29.1",
     "react": "^17.0.1",
     "react-beautiful-dnd": "^13.0.0",

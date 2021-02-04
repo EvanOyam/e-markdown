@@ -6,6 +6,7 @@ module.exports = {
     'no-plusplus': 'off',
     'consistent-return': 'off',
     'react/jsx-props-no-spreading': 'off',
+    'import/prefer-default-export': 'off',
   },
   parserOptions: {
     ecmaVersion: 2020,

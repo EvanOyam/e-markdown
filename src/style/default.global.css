@@ -301,3 +301,8 @@ tr.ant-table-expanded-row:hover > td,
   margin: 0;
   padding: 8px;
 }
+
+.ant-spin-nested-loading {
+  border-radius: 8px;
+  overflow: hidden;
+}

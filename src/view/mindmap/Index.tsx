@@ -1,10 +1,17 @@
-import styled from '@emotion/styled';
 import React from 'react';
+import MindmapMenu from './MindmapMenu';
+import { MindmapPanel, MindmapWrapper } from './mindmap.style';
+import Mindmap from './Mindmap';
 
-const Title = styled.h1`
-  color: #fff;
-`;
+// todo 抽象 menu
 
-export default function Mindmap() {
-  return <Title>Mindmap</Title>;
+export default function Markdown() {
+  return (
+    <MindmapWrapper>
+      <MindmapMenu />
+      <MindmapPanel>
+        <Mindmap />
+      </MindmapPanel>
+    </MindmapWrapper>
+  );
 }
