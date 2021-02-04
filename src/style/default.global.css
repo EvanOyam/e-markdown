@@ -2,6 +2,7 @@
 @import '~react-day-picker/lib/style.css';
 @import '~easymde/dist/easymde.min.css';
 @import './iconfont.css';
+@import '~github-markdown-css';
 
 h1,
 h2,
@@ -305,4 +306,25 @@ tr.ant-table-expanded-row:hover > td,
 .ant-spin-nested-loading {
   border-radius: 8px;
   overflow: hidden;
+}
+
+.markdown-body blockquote,
+.markdown-body details,
+.markdown-body dl,
+.markdown-body ol,
+.markdown-body p,
+.markdown-body pre,
+.markdown-body table,
+.markdown-body ul {
+  color: rgb(236, 236, 236);
+}
+
+.markdown-body pre {
+  padding: 20px !important;
+  border-radius: 8px;
+  background-color: rgba(67, 175, 218, 0.1) !important;
+}
+
+.markdown-body a {
+  color: #f07e4a;
 }
