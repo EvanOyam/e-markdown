@@ -152,10 +152,62 @@ tr.ant-table-expanded-row:hover > td,
   color: rgba(236, 236, 236, 0.45);
 }
 
+.ant-select:not(.ant-select-customize-input) .ant-select-selector,
+.ant-picker,
 .ant-input {
   background-color: rgba(255, 253, 238, 0.1);
   border-color: rgba(255, 253, 238, 0.1);
   color: #fff;
+}
+
+.ant-picker-panel-container {
+  background: #252c39;
+}
+
+.ant-picker-header button,
+.ant-picker-header {
+  color: rgb(236, 236, 236);
+}
+
+.ant-picker-header {
+  border-bottom: 1px solid rgba(255, 253, 238, 0.2);
+}
+
+.ant-picker-panel {
+  border: 0;
+}
+
+.ant-picker-footer {
+  border-top: 1px solid rgba(255, 253, 238, 0.2) !important;
+  border-bottom: 1px solid rgba(255, 253, 238, 0.2) !important;
+}
+
+.ant-picker-cell-in-view,
+.ant-picker-content th {
+  color: rgb(236, 236, 236);
+}
+
+.ant-select-arrow,
+.ant-picker-suffix,
+.ant-picker-input > input {
+  color: #fff;
+}
+
+.ant-select-dropdown {
+  background-color: #252c39;
+}
+
+.ant-select-item {
+  color: rgb(236, 236, 236);
+}
+
+.ant-select-item-option-selected:not(.ant-select-item-option-disabled) {
+  background-color: #d6d6d6 !important;
+}
+
+.ant-select-item-option-active:not(.ant-select-item-option-disabled),
+.ant-select-item:hover {
+  background-color: #414747;
 }
 
 .ant-btn:hover,
@@ -168,6 +220,12 @@ tr.ant-table-expanded-row:hover > td,
 .ant-input-search-button {
   background-color: rgba(255, 253, 238, 0.1);
   border-color: rgba(255, 253, 238, 0.1);
+}
+
+.ant-picker-cell:hover:not(.ant-picker-cell-in-view) .ant-picker-cell-inner,
+.ant-picker-cell:hover:not(.ant-picker-cell-selected):not(.ant-picker-cell-range-start):not(.ant-picker-cell-range-end):not(.ant-picker-cell-range-hover-start):not(.ant-picker-cell-range-hover-end)
+  .ant-picker-cell-inner {
+  background: rgba(255, 253, 238, 0.2);
 }
 
 .anticon-search {
@@ -186,7 +244,7 @@ tr.ant-table-expanded-row:hover > td,
 }
 
 .editor-toolbar button.active,
-.editor-toolbar button:hover i {
+.editor-toolbar button:hover {
   color: #272b31;
 }
 
@@ -305,6 +363,59 @@ tr.ant-table-expanded-row:hover > td,
 .ant-spin-nested-loading {
   border-radius: 8px;
   overflow: hidden;
+}
+
+.ant-modal {
+  padding-bottom: 0;
+}
+
+.ant-modal-content {
+  background: #1f242d;
+}
+
+.ant-modal-header {
+  background-color: #262b39;
+  color: rgb(236, 236, 236);
+  border-bottom: 1px solid rgba(255, 253, 238, 0.2);
+}
+
+.ant-modal-footer {
+  border-top: 1px solid rgba(255, 253, 238, 0.2);
+}
+
+.ant-modal,
+.ant-modal-title,
+.ant-modal-close {
+  color: rgb(236, 236, 236);
+}
+
+.ant-btn-primary {
+  background: #ea442d;
+  border-color: #ea442d;
+}
+
+.ant-modal-close:focus,
+.ant-modal-close:hover {
+  background-color: rgba(255, 253, 238, 0.2) !important;
+  color: rgb(236, 236, 236) !important;
+  transition: all 0.35s;
+}
+
+.ant-form-item-label > label {
+  color: rgb(236, 236, 236);
+}
+
+.ant-modal .ant-btn-primary:hover,
+.ant-modal .ant-btn-primary:focus {
+  border-color: #f16452 !important;
+  background: #f16452 !important;
+}
+
+.ant-form-item-has-error .ant-input,
+.ant-form-item-has-error .ant-input-affix-wrapper,
+.ant-form-item-has-error .ant-input:hover,
+.ant-form-item-has-error .ant-input-affix-wrapper:hover {
+  background-color: rgba(255, 77, 80, 0.171);
 }
 
 .markdown-body blockquote,

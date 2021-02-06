@@ -6,8 +6,14 @@ import {
   CodeTwoTone,
   EditTwoTone,
 } from '@ant-design/icons';
-import { ClassifyLayout } from './todo.style';
+import styled from '@emotion/styled';
 import { ClassifyProps } from '../../typings/todo';
+
+const ClassifyWrapper = styled.div`
+  padding: 16px;
+  overflow: hidden;
+  border-top: 1px solid rgba(255, 253, 238, 0.1);
+`;
 
 const tagList = [
   {
@@ -41,7 +47,7 @@ const tagList = [
 export default function Classify(props: ClassifyProps) {
   const { activedClassify, customActivedClassify } = props;
   return (
-    <ClassifyLayout>
+    <ClassifyWrapper>
       <List
         itemLayout="horizontal"
         dataSource={tagList}
@@ -58,6 +64,6 @@ export default function Classify(props: ClassifyProps) {
           </List.Item>
         )}
       />
-    </ClassifyLayout>
+    </ClassifyWrapper>
   );
 }

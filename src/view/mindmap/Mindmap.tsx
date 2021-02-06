@@ -5,6 +5,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { Spin } from 'antd';
 import { CustomEventTarget, SvgSizeType } from '../../typings/mindmap';
+import useResize from '../../hooks/useResize';
 
 const { BrowserWindow } = require('electron').remote;
 
@@ -47,12 +48,7 @@ export default function Mindmap() {
     }, 1000);
   };
 
-  useEffect(() => {
-    window.addEventListener('resize', resizeListener);
-    return () => {
-      window.removeEventListener('resize', resizeListener);
-    };
-  }, []);
+  useResize(resizeListener);
 
   useEffect(() => {
     const svgH = window.innerHeight - 50;

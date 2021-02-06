@@ -9,6 +9,7 @@
     "rebuild": "electron-rebuild --parallel --types prod,dev,optional --module-dir src",
     "lint": "cross-env NODE_ENV=development eslint . --cache --ext .js,.jsx,.ts,.tsx",
     "package": "rm -rf src/dist && yarn build && electron-builder build --publish never",
+    "package:debug": "cross-env DEBUG_PROD=true yarn package",
     "postinstall": "node -r @babel/register .erb/scripts/CheckNativeDep.js && electron-builder install-app-deps && yarn cross-env NODE_ENV=development webpack --config ./.erb/configs/webpack.config.renderer.dev.dll.babel.js && opencollective-postinstall && yarn-deduplicate yarn.lock",
     "start": "node -r @babel/register ./.erb/scripts/CheckPortInUse.js && cross-env yarn start:renderer",
     "start:main": "cross-env NODE_ENV=development electron -r ./.erb/scripts/BabelRegister ./src/main.dev.ts",
@@ -178,6 +179,7 @@
     "@types/react-syntax-highlighter": "^13.5.0",
     "@types/react-test-renderer": "^16.9.3",
     "@types/recharts": "^1.8.19",
+    "@types/uuid": "^8.3.0",
     "@types/webpack-env": "^1.15.2",
     "@typescript-eslint/eslint-plugin": "^4.8.1",
     "@typescript-eslint/parser": "^4.8.1",
@@ -247,6 +249,7 @@
     "antd": "^4.11.2",
     "electron-debug": "^3.1.0",
     "electron-log": "^4.2.4",
+    "electron-store": "^7.0.1",
     "electron-updater": "^4.3.4",
     "github-markdown-css": "^4.0.0",
     "history": "^5.0.0",
@@ -264,7 +267,8 @@
     "recharts": "^2.0.4",
     "regenerator-runtime": "^0.13.5",
     "source-map-support": "^0.5.19",
-    "use-deep-compare-effect": "^1.6.1"
+    "use-deep-compare-effect": "^1.6.1",
+    "uuid": "^8.3.2"
   },
   "devEngines": {
     "node": ">=10.x",

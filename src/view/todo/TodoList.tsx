@@ -1,236 +1,202 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useRef, useContext, useState } from 'react';
 import { Table } from 'antd';
-import { DeleteOutlined, CalendarOutlined } from '@ant-design/icons';
-import {
-  LineWrapper,
-  IconWrapper,
-  TodoListWrapper,
-  TableWrapper,
-} from './todo.style';
-import { TodoMeta } from '../../typings/todo';
+import { DeleteOutlined } from '@ant-design/icons';
+import styled from '@emotion/styled';
+import { ipcRenderer } from 'electron';
+import moment from 'moment';
+import { TodoMeta, TodoTableType } from '../../typings/todo';
 import Editor from '../../components/Editor';
+import useResize from '../../hooks/useResize';
+import { TodoContext } from '../../context/todoContext';
 
 const { Column } = Table;
 
+const TodoListWrapper = styled.div`
+  padding: 16px 24px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+`;
+
+const TableWrapper = styled.div`
+  height: 48%;
+  overflow: hidden;
+`;
+
+const LineWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 14px;
+`;
+
+const IconWrapper = styled.div`
+  line-height: 18px;
+  font-size: 18px;
+  & > span {
+    margin: 0 4px;
+    &:hover {
+      cursor: pointer;
+    }
+  }
+`;
+
 const renderDesc = (record: TodoMeta) => {
-  return <Editor initValue={record.desc} />;
+  return <Editor textValue="" handleChange={() => {}} />; // todo
 };
 
-const finishedList: TodoMeta[] = [];
+const renderTable = (props: TodoTableType) => {
+  const { tableData, scrollH, rowSelection, loading } = props;
+  return (
+    <Table
+      size="small"
+      rowKey="id"
+      dataSource={tableData}
+      showHeader={false}
+      pagination={false}
+      loading={loading}
+      scroll={{ y: scrollH }}
+      expandable={{
+        expandedRowRender: renderDesc,
+        rowExpandable: () => true,
+      }}
+      rowSelection={rowSelection}
+    >
+      <Column
+        key="title"
+        dataIndex="title"
+        render={(title) => (
+          <LineWrapper>
+            {title}
+            <IconWrapper>
+              {/* <CalendarOutlined style={{ color: '#F07E4A' }} /> // todo 补充提醒功能 */}
+              <DeleteOutlined style={{ color: '#E44259' }} />
+            </IconWrapper>
+          </LineWrapper>
+        )}
+      />
+    </Table>
+  );
+};
 
 // todo list 用 memo 渲染
-
-const targetList = [
-  {
-    key: 1,
-    title: '任务1',
-    desc: '这是任务1',
-    alarm: '',
-  },
-  {
-    key: 2,
-    title: '任务2',
-    desc: '这是任务2',
-    alarm: '',
-  },
-  {
-    key: 3,
-    title: '任务3',
-    desc: '这是任务3',
-    alarm: '',
-  },
-  {
-    key: 4,
-    title: '任务4',
-    desc: '这是任务4',
-    alarm: '',
-  },
-  {
-    key: 5,
-    title: '任务5',
-    desc: '这是任务5',
-    alarm: '',
-  },
-  {
-    key: 6,
-    title: '任务6',
-    desc: '这是任务6',
-    alarm: '',
-  },
-  {
-    key: 7,
-    title: '任务7',
-    desc: '这是任务7',
-    alarm: '',
-  },
-  {
-    key: 8,
-    title: '任务8',
-    desc: '这是任务8',
-    alarm: '',
-  },
-  {
-    key: 9,
-    title: '任务9',
-    desc: '这是任务9',
-    alarm: '',
-  },
-  {
-    key: 10,
-    title: '任务10',
-    desc: '这是任务10',
-    alarm: '',
-  },
-  {
-    key: 11,
-    title: '任务11',
-    desc: '这是任务11',
-    alarm: '',
-  },
-  {
-    key: 12,
-    title: '任务12',
-    desc: '这是任务12',
-    alarm: '',
-  },
-  {
-    key: 13,
-    title: '任务13',
-    desc: '这是任务13',
-    alarm: '',
-  },
-  {
-    key: 14,
-    title: '任务14',
-    desc: '这是任务14',
-    alarm: '',
-  },
-];
-
 export default function TodoList() {
+  const [tableLoading, setTableLoading] = useState(false);
+  const { state, dispatch } = useContext(TodoContext);
+  const todoListRowSelection = {
+    onSelect: (record: TodoMeta) => {
+      const newKeys = [...state.selectedFinishedRowsKeys, record.id];
+      const newTodoList = state.todoListData.filter(
+        (item) => item.id !== record.id
+      );
+      const newFinishedList = state.finishedListData.concat(record);
+      dispatch({ type: 'setSelectedFinishedRowsKeys', value: newKeys });
+      dispatch({ type: 'setTodoListData', value: newTodoList });
+      dispatch({ type: 'setFinishedListData', value: newFinishedList });
+    },
+    selectedRowKeys: [],
+  };
+  const finishedListRowSelection = {
+    onSelect: (record: TodoMeta) => {
+      const newTodoList = state.todoListData.concat(record);
+      const newFinishedList = state.finishedListData.filter(
+        (item) => item.id !== record.id
+      );
+      dispatch({ type: 'setFinishedListData', value: newFinishedList });
+      dispatch({ type: 'setTodoListData', value: newTodoList });
+    },
+    selectedRowKeys: state.selectedFinishedRowsKeys,
+  };
+
+  // ****** rerender 刷新 table 可滚动高度 ******
   const textRef = useRef<HTMLHeadingElement>(null);
   const tableRef = useRef<HTMLDivElement>(null);
-  const [tableScrollH, setTableScrollH] = useState(0);
-  const resizeListener = () => {
+  const handleScrollH = () => {
     const tableH = tableRef.current?.clientHeight || 0;
     const textH = textRef.current?.clientHeight || 0;
     const scrollH = tableH - textH;
     if (scrollH) {
-      setTableScrollH(scrollH);
+      dispatch({ type: 'setTableScrollH', value: scrollH });
     }
   };
+  // 初始化 table 高度
   useEffect(() => {
-    const tableH = tableRef.current?.offsetHeight || 0;
-    const textH = textRef.current?.offsetHeight || 0;
-    const scrollH = tableH - textH;
-    setTableScrollH(scrollH);
+    handleScrollH();
   }, []);
+  // 窗口变化时刷新高度
+  useResize(() => {
+    handleScrollH();
+  });
+  // ****** rerender 刷新 table 可滚动高度 ******
 
+  // ****** 初始化数据 ******
   useEffect(() => {
-    window.addEventListener('resize', resizeListener);
-    return () => {
-      window.removeEventListener('resize', resizeListener);
-    };
+    (async () => {
+      try {
+        setTableLoading(true);
+        const dateIndex = await ipcRenderer.invoke(
+          'getStoreValue',
+          `todo.dateIndex.${moment().format('YYYY-MM-DD')}`
+        );
+        if (!dateIndex) {
+          setTableLoading(false);
+          return;
+        }
+        const todoListPromise = [];
+        for await (const id of dateIndex) {
+          const todoData = ipcRenderer.invoke(
+            'getStoreValue',
+            `todo.data.${id}`
+          );
+          if (todoData) todoListPromise.push(todoData);
+        }
+        // 过滤 undefined 或其他异常数据
+        const storeTodoList = (await Promise.all(todoListPromise)).filter(
+          (item: TodoMeta) => item && item.status === 0
+        );
+        const storeFinishedList = (await Promise.all(todoListPromise)).filter(
+          (item: TodoMeta) => item && item.status === 1
+        );
+        const finishedListKeys = storeFinishedList.map((record) => record.id);
+        dispatch({
+          type: 'setSelectedFinishedRowsKeys',
+          value: finishedListKeys,
+        });
+        dispatch({ type: 'setTodoListData', value: storeTodoList });
+        dispatch({
+          type: 'setFinishedListData',
+          value: storeFinishedList,
+        });
+        setTableLoading(false);
+      } catch (error) {
+        setTableLoading(false);
+        console.log('error: ', error);
+      }
+    })();
   }, []);
-
-  const [targetListData, setTargetListData] = useState([] as TodoMeta[]);
-  const [finishedListData, setFinishedListData] = useState([] as TodoMeta[]);
-  const [selectedFinishedRowsKeys, setSelectedFinishedRowsKeys] = useState(
-    [] as (string | number)[]
-  );
-  useEffect(() => {
-    setTargetListData(targetList);
-  }, []);
-  useEffect(() => {
-    setFinishedListData(finishedList);
-  }, []);
-
-  const targetListRowSelection = {
-    onSelect: (record: TodoMeta) => {
-      setSelectedFinishedRowsKeys((prevKeys) => {
-        return [...prevKeys, record.key];
-      });
-      setTargetListData((prevList) => {
-        return prevList.filter((item) => item.key !== record.key);
-      });
-      setFinishedListData((prevList) => {
-        return prevList.concat(record);
-      });
-    },
-    selectedRowKeys: [],
-  };
-
-  const finishedListRowSelection = {
-    onSelect: (record: TodoMeta) => {
-      setFinishedListData((prevList) => {
-        return prevList.filter((item) => item.key !== record.key);
-      });
-      setTargetListData((prevList) => {
-        return prevList.concat(record);
-      });
-    },
-    selectedRowKeys: selectedFinishedRowsKeys,
-  };
+  // ****** 初始化数据 ******
 
   return (
     <TodoListWrapper>
       <TableWrapper ref={tableRef}>
         <h3 ref={textRef}>未完成</h3>
-        <Table
-          size="small"
-          dataSource={targetListData}
-          showHeader={false}
-          pagination={false}
-          expandable={{
-            expandedRowRender: renderDesc,
-            rowExpandable: () => true,
-          }}
-          scroll={{ y: tableScrollH }}
-          rowSelection={targetListRowSelection}
-        >
-          <Column
-            key="title"
-            dataIndex="title"
-            render={(title) => (
-              <LineWrapper>
-                {title}
-                <IconWrapper>
-                  <CalendarOutlined style={{ color: '#F07E4A' }} />
-                  <DeleteOutlined style={{ color: '#E44259' }} />
-                </IconWrapper>
-              </LineWrapper>
-            )}
-          />
-        </Table>
+        {renderTable({
+          tableData: state.todoListData,
+          scrollH: state.tableScrollH,
+          rowSelection: todoListRowSelection,
+          loading: tableLoading,
+        })}
       </TableWrapper>
       <TableWrapper>
         <h3>已完成</h3>
-        <Table
-          size="small"
-          scroll={{ y: tableScrollH }}
-          dataSource={finishedListData}
-          showHeader={false}
-          pagination={false}
-          expandable={{
-            expandedRowRender: renderDesc,
-            rowExpandable: () => true,
-          }}
-          rowSelection={finishedListRowSelection}
-        >
-          <Column
-            key="title"
-            dataIndex="title"
-            render={(title) => (
-              <LineWrapper>
-                {title}
-                <IconWrapper>
-                  <CalendarOutlined style={{ color: '#F07E4A' }} />
-                  <DeleteOutlined style={{ color: '#E44259' }} />
-                </IconWrapper>
-              </LineWrapper>
-            )}
-          />
-        </Table>
+        {renderTable({
+          tableData: state.finishedListData,
+          scrollH: state.tableScrollH,
+          rowSelection: finishedListRowSelection,
+          loading: tableLoading,
+        })}
       </TableWrapper>
     </TodoListWrapper>
   );

@@ -1,8 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import DayPicker from 'react-day-picker';
 import { Badge } from 'antd';
-import { DayPickerLayout, DayStyle } from './todo.style';
+import styled from '@emotion/styled';
 import { CustomDayPickerProps } from '../../typings/todo';
+
+const DayPickerWrapper = styled.div`
+  height: 360px;
+`;
+
+const DayWrapper = styled.div`
+  position: relative;
+`;
 
 export default function CustomDayPicker(props: CustomDayPickerProps) {
   const { selectedDay, customSelectDay } = props;
@@ -18,23 +26,23 @@ export default function CustomDayPicker(props: CustomDayPickerProps) {
   const renderDay = (day: Date) => {
     const date = day.getDate();
     return (
-      <DayStyle>
+      <DayWrapper>
         {date}
         {todoDays.includes(+new Date(day)) && (
           <Badge className="ant-badge-status-day" status="warning" />
         )}
-      </DayStyle>
+      </DayWrapper>
     );
   };
 
   return (
-    <DayPickerLayout>
+    <DayPickerWrapper>
       <DayPicker
         showOutsideDays
         onDayClick={handleDayClick}
         selectedDays={selectedDay}
         renderDay={renderDay}
       />
-    </DayPickerLayout>
+    </DayPickerWrapper>
   );
 }

@@ -4,5 +4,6 @@ type DefaultEditorProps = {
 };
 
 export type EditorProps = {
-  initValue: string;
+  textValue: string;
+  handleChange: (text: string) => void;
 } & Partial<DefaultEditorProps>;

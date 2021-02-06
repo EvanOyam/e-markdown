@@ -1,37 +1,30 @@
-import React, { useState } from 'react';
-import Classify from './Classify';
-import CustomDayPicker from './CustomDayPicker';
-import TodoList from './TodoList';
-import TodoToolsBar from './TodoToolsBar';
-import { TodoWrapper, TodoMenu, TodoPanel } from './todo.style';
+import React, { useReducer } from 'react';
+import styled from '@emotion/styled';
+import TodoMenu from './TodoMenu';
+import TodoPanel from './TodoPanel';
+import { TodoContextProvider, reducer } from '../../context/todoContext';
+import { TodoMeta } from '../../typings/todo';
+
+const TodoWrapper = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+`;
 
 export default function Todo() {
-  const [selectedDay, setSelectedDay] = useState<Date>();
-  const [activedClassify, setActivedClassify] = useState(0);
-  const customSelectDay = (day: Date) => {
-    setActivedClassify(0);
-    setSelectedDay(day);
-  };
-  const customActivedClassify = (id: number) => {
-    setSelectedDay(undefined);
-    setActivedClassify(id);
-  };
+  const [state, dispatch] = useReducer(reducer, {
+    tableScrollH: 0,
+    todoListData: [] as TodoMeta[],
+    finishedListData: [] as TodoMeta[],
+    selectedFinishedRowsKeys: [] as (string | number)[],
+  });
+
   return (
-    <TodoWrapper>
-      <TodoMenu>
-        <CustomDayPicker
-          selectedDay={selectedDay}
-          customSelectDay={customSelectDay}
-        />
-        <Classify
-          activedClassify={activedClassify}
-          customActivedClassify={customActivedClassify}
-        />
-      </TodoMenu>
-      <TodoPanel>
-        <TodoToolsBar title="今天" todoCount={3} />
-        <TodoList />
-      </TodoPanel>
-    </TodoWrapper>
+    <TodoContextProvider value={{ state, dispatch }}>
+      <TodoWrapper>
+        <TodoMenu />
+        <TodoPanel />
+      </TodoWrapper>
+    </TodoContextProvider>
   );
 }
