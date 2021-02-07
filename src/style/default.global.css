@@ -238,6 +238,10 @@ tr.ant-table-expanded-row:hover > td,
   color: #fbf8f5;
 }
 
+.editor-toolbar > button:first-child {
+  margin-left: 4px;
+}
+
 .CodeMirror-cursor {
   color: #fbf8f5;
   border-color: #fbf8f5;

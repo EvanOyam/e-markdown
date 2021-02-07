@@ -4,6 +4,7 @@ type DefaultEditorProps = {
 };
 
 export type EditorProps = {
-  textValue: string;
+  textValue?: string;
+  mdPath?: string;
   handleChange: (text: string) => void;
 } & Partial<DefaultEditorProps>;

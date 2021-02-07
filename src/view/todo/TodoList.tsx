@@ -49,7 +49,6 @@ const IconWrapper = styled.div`
 // todo refactor: list 用 memo 渲染
 export default function TodoList(todoListProps: TodoListProps) {
   const { type, value } = todoListProps.actived;
-  const [content, setContent] = useState('');
   const { state, dispatch } = useContext(TodoContext);
   const todoListRowSelection = {
     onSelect: async (record: TodoMeta) => {
@@ -190,10 +189,9 @@ export default function TodoList(todoListProps: TodoListProps) {
   }, [todoListProps, state.filterText]);
   // ****** 初始化数据 ******
 
-  // todo feat: handleChange
   // todo feat: save
-  const renderDesc = () => {
-    return <Editor textValue={content} handleChange={() => {}} />;
+  const renderDesc = (record: TodoMeta) => {
+    return <Editor mdPath={record.path} handleChange={() => {}} />;
   };
 
   const renderTable = (tableInfo: TodoTableType) => {
@@ -256,22 +254,7 @@ export default function TodoList(todoListProps: TodoListProps) {
         pagination={false}
         scroll={{ y: state.tableScrollH }}
         expandable={{
-          expandedRowRender: renderDesc,
-          onExpand: async (expanded, record) => {
-            let mdContent = '';
-            if (expanded) {
-              const { path: todoPath } = record;
-              const basePath = path.join(__dirname, '..', 'assets', 'docs');
-              const contentPath = path.join(basePath, `${todoPath}.md`);
-              try {
-                mdContent =
-                  (await fs.promises.readFile(contentPath)).toString() || '';
-              } catch (error) {
-                console.log('Loading todo content error: ', error);
-              }
-            }
-            setContent(mdContent);
-          },
+          expandedRowRender: (record) => renderDesc(record),
           rowExpandable: () => true,
         }}
         rowSelection={rowSelection}
