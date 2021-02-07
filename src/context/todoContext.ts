@@ -13,6 +13,8 @@ export const reducer = (state: TodoStateType, action: TodoActionType) => {
       return { ...state, selectedFinishedRowsKeys: action.value };
     case 'changeDateOrClassify':
       return { ...state, actived: action.value };
+    case 'setFilterText':
+      return { ...state, filterText: action.value };
     default:
       return { ...state };
   }

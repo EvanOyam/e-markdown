@@ -1,5 +1,6 @@
 import React, { useState, useContext } from 'react';
 import styled from '@emotion/styled';
+import moment from 'moment';
 import CustomDayPicker from './CustomDayPicker';
 import Classify from './Classify';
 import { TodoContext } from '../../context/todoContext';
@@ -16,6 +17,10 @@ export default function TodoMenu() {
   const customSelectDay = (day: Date) => {
     setActivedClassify(0);
     setSelectedDay(day);
+    dispatch({
+      type: 'changeDateOrClassify',
+      value: { type: 'date', value: moment(day).format('YYYY-MM-DD') },
+    });
   };
   const handleSetActivedClassify = (id: ClassifyType) => {
     setSelectedDay(undefined);

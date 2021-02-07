@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { List, Badge } from 'antd';
+import React from 'react';
+import { List } from 'antd';
 import {
   TagsTwoTone,
   CodeTwoTone,
@@ -7,8 +7,7 @@ import {
   ProfileTwoTone,
 } from '@ant-design/icons';
 import styled from '@emotion/styled';
-import { ipcRenderer } from 'electron';
-import { ClassifyList, ClassifyProps, ClassifyType } from '../../typings/todo';
+import { ClassifyList, ClassifyProps } from '../../typings/todo';
 
 const ClassifyWrapper = styled.div`
   padding: 16px;
@@ -41,46 +40,27 @@ const classifyList: ClassifyList[] = [
   },
 ];
 
+// todo feat: 改为数据库后加上提醒数字
 export default function Classify(props: ClassifyProps) {
   const { activedClassify, setActivedClassify } = props;
-  const [todoNum, setTodoNum] = useState([] as number[]);
-
-  useEffect(() => {
-    (async () => {
-      const classifyIndexPromise = [];
-      for await (const classify of classifyList) {
-        classifyIndexPromise.push(
-          ipcRenderer.invoke(
-            'getStoreValue',
-            `todo.classifyIndex.${classify.id}`
-          )
-        );
-      }
-      // todo feat: 改成 db 后，提醒数应该是未完成而非全部的
-      const classifyIndex = await Promise.all(classifyIndexPromise);
-      const todoNumList = classifyIndex.map((item) => (item ? item.length : 0));
-      setTodoNum(todoNumList);
-    })();
-  }, []);
-
   return (
     <ClassifyWrapper>
       <List
         itemLayout="horizontal"
         dataSource={classifyList}
         split={false}
-        renderItem={(item, index) => (
+        renderItem={(item) => (
           <List.Item
             className={
               activedClassify === item.id ? 'ant-list-item-actived' : ''
             }
             onClick={() => setActivedClassify(item.id)}
-            extra={
-              <Badge
-                style={{ backgroundColor: '#5aabda' }}
-                count={todoNum[index]}
-              />
-            }
+            // extra={
+            //   <Badge
+            //     style={{ backgroundColor: '#5aabda' }}
+            //     count={todoNum[index]}
+            //   />
+            // }
           >
             <List.Item.Meta avatar={item.icon} title={item.title} />
           </List.Item>

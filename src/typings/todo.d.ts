@@ -36,7 +36,6 @@ export interface TodoMeta {
 
 export interface TodoToolsBarProps {
   title: string;
-  todoCount: number;
 }
 
 type ActivedTodoType =
@@ -55,6 +54,7 @@ export interface TodoStateType {
   finishedListData: TodoMeta[];
   selectedFinishedRowsKeys: (string | number)[];
   actived: ActivedTodoType;
+  filterText: string;
 }
 
 export type TodoActionType =
@@ -77,6 +77,10 @@ export type TodoActionType =
   | {
       type: 'changeDateOrClassify';
       value: ActivedTodoType;
+    }
+  | {
+      type: 'setFilterText';
+      value: string;
     };
 
 interface RowSelectionType {

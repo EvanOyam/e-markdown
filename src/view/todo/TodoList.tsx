@@ -73,7 +73,7 @@ export default function TodoList(todoListProps: TodoListProps) {
         dispatch({ type: 'setTodoListData', value: newTodoList });
         dispatch({ type: 'setFinishedListData', value: newFinishedList });
       } catch (error) {
-        console.log('error: ', error);
+        console.log('Change todo status to "finished" error: ', error);
       }
     },
     selectedRowKeys: [],
@@ -98,7 +98,7 @@ export default function TodoList(todoListProps: TodoListProps) {
         dispatch({ type: 'setFinishedListData', value: newFinishedList });
         dispatch({ type: 'setTodoListData', value: newTodoList });
       } catch (error) {
-        console.log('error: ', error);
+        console.log('Change todo status to "todo" error: ', error);
       }
     },
     selectedRowKeys: state.selectedFinishedRowsKeys,
@@ -148,12 +148,30 @@ export default function TodoList(todoListProps: TodoListProps) {
           );
           if (todoData) todoListPromise.push(todoData);
         }
-        // 过滤 undefined 或其他异常数据
+        // 过滤 undefined ，筛选词，或其他异常数据
         const storeTodoList = (await Promise.all(todoListPromise)).filter(
-          (item: TodoMeta) => item && item.status === 0
+          (item: TodoMeta) => {
+            if (state.filterText) {
+              return (
+                item &&
+                item.status === 0 &&
+                item.title.indexOf(state.filterText) !== -1
+              );
+            }
+            return item && item.status === 0;
+          }
         );
         const storeFinishedList = (await Promise.all(todoListPromise)).filter(
-          (item: TodoMeta) => item && item.status === 1
+          (item: TodoMeta) => {
+            if (state.filterText) {
+              return (
+                item &&
+                item.status === 1 &&
+                item.title.indexOf(state.filterText) !== -1
+              );
+            }
+            return item && item.status === 1;
+          }
         );
         const finishedListKeys = storeFinishedList.map((record) => record.id);
         dispatch({
@@ -166,10 +184,10 @@ export default function TodoList(todoListProps: TodoListProps) {
           value: storeFinishedList,
         });
       } catch (error) {
-        console.log('error: ', error);
+        console.log('Initialization todo list error: ', error);
       }
     })();
-  }, [todoListProps]);
+  }, [todoListProps, state.filterText]);
   // ****** 初始化数据 ******
 
   // todo feat: handleChange
@@ -204,7 +222,7 @@ export default function TodoList(todoListProps: TodoListProps) {
           dispatch({ type: 'setSelectedFinishedRowsKeys', value: newKeys });
         }
       } catch (error) {
-        console.log('delete todo error: ', error);
+        console.log('Delete todo error: ', error);
       }
     };
 
@@ -240,17 +258,19 @@ export default function TodoList(todoListProps: TodoListProps) {
         expandable={{
           expandedRowRender: renderDesc,
           onExpand: async (expanded, record) => {
+            let mdContent = '';
             if (expanded) {
               const { path: todoPath } = record;
               const basePath = path.join(__dirname, '..', 'assets', 'docs');
               const contentPath = path.join(basePath, `${todoPath}.md`);
-              const mdContent = (
-                await fs.promises.readFile(contentPath)
-              ).toString();
-              setContent(mdContent);
-            } else {
-              setContent('');
+              try {
+                mdContent =
+                  (await fs.promises.readFile(contentPath)).toString() || '';
+              } catch (error) {
+                console.log('Loading todo content error: ', error);
+              }
             }
+            setContent(mdContent);
           },
           rowExpandable: () => true,
         }}

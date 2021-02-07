@@ -22,6 +22,7 @@ export default function Todo() {
       type: 'date',
       value: moment().format('YYYY-MM-DD'),
     },
+    filterText: '',
   });
 
   return (

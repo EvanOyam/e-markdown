@@ -38,12 +38,11 @@ export default function TodoToolsBar(props: TodoToolsBarProps) {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
-  // todo feat: 标题
-  const { title, todoCount } = props;
+  const { title } = props;
 
-  // todo feat: 搜索
+  // todo refactor: 改成 db 后优化搜索
   const onSearch = (value: string) => {
-    return value;
+    dispatch({ type: 'setFilterText', value });
   };
 
   // todo refactor: 细分 catch，抽象存储索引逻辑
@@ -120,7 +119,7 @@ export default function TodoToolsBar(props: TodoToolsBarProps) {
       setIsModalVisible(false);
     } catch (error) {
       setLoading(false);
-      console.log('error: ', error);
+      console.log('Createerror: ', error);
     }
   };
 
@@ -129,7 +128,6 @@ export default function TodoToolsBar(props: TodoToolsBarProps) {
       <PageHeader
         className="site-page-header"
         title={title}
-        subTitle={`剩余 ${todoCount} 项代办`}
         extra={
           <ToolsBarActionWrapper>
             <Search
