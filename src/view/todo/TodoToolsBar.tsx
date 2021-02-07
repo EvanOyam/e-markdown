@@ -67,6 +67,8 @@ export default function TodoToolsBar(props: TodoToolsBarProps) {
       const newList = state.todoListData.concat(todoData);
 
       // 持久化 md
+      const hasDir = await fs.existsSync(todoPath);
+      if (!hasDir) await fs.promises.mkdir(todoPath, { recursive: true });
       await fs.promises.writeFile(mdPath, mdContent);
       // 创建日期索引
       const date = moment(todoData.date).format('YYYY-MM-DD');

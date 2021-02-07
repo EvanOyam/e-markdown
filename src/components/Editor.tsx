@@ -3,6 +3,7 @@ import SimpleMDE from 'react-simplemde-editor';
 import * as EasyMDE from 'easymde';
 import * as path from 'path';
 import * as fs from 'fs';
+import { message } from 'antd';
 import { EditorProps } from '../typings/editor';
 
 // todo fix: 分屏时闪烁的 bug
@@ -21,6 +22,7 @@ export default function Editor(props: EditorProps) {
             (await fs.promises.readFile(contentPath)).toString() || '';
           setContent(mdContent);
         } catch (error) {
+          message.error('文件可能已损坏，加载失败');
           console.log('Loading todo content error: ', error);
         }
       } else {
@@ -39,8 +41,11 @@ export default function Editor(props: EditorProps) {
           try {
             const basePath = path.join(__dirname, '..', 'assets', 'docs');
             const contentPath = path.join(basePath, `${mdPath}.md`);
+            const hasDir = await fs.existsSync(basePath);
+            if (!hasDir) await fs.promises.mkdir(basePath, { recursive: true });
             await fs.promises.writeFile(contentPath, editor.value());
           } catch (error) {
+            message.error('文件可能已损坏，保存失败');
             console.log('Override todo error: ', error);
           }
         },

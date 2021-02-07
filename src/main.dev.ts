@@ -15,10 +15,7 @@ import { app, BrowserWindow, ipcMain, shell } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
-
-const Store = require('electron-store');
-
-const store = new Store();
+import store from './store';
 
 ipcMain.handle('getStoreValue', (event, key) => {
   return store.get(key);

@@ -9,7 +9,7 @@ import useResize from '../../hooks/useResize';
 
 const { BrowserWindow } = require('electron').remote;
 
-const markdownPath = path.join(__dirname, '..', 'assets', 'mock', 'mindmap.md');
+const markdownPath = path.join(__dirname, '..', 'assets', 'docs', 'mindmap.md');
 const markdown = fs.readFileSync(markdownPath).toString();
 
 // transform markdown and get assets

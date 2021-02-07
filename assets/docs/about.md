@@ -5,21 +5,6 @@
 > Github: [EMarkdown](https://github.com/EvanOyam/e-markdown)  
 > Author: [@Evan](https://github.com/EvanOyam)
 
-```tsx
-const aboutMdPath = path.join(__dirname, '..', 'assets', 'docs', 'about.md');
-const aboutMd = fs.readFileSync(aboutMdPath).toString();
-
-export default function About() {
-  return (
-    <AboutWrapper>
-      <div className="markdown-body">
-        <ReactMarkdown>{aboutMd}</ReactMarkdown>
-      </div>
-    </AboutWrapper>
-  );
-}
-```
-
 ## 功能
 
 #### 看板

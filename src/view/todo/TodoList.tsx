@@ -189,7 +189,6 @@ export default function TodoList(todoListProps: TodoListProps) {
   }, [todoListProps, state.filterText]);
   // ****** 初始化数据 ******
 
-  // todo feat: save
   const renderDesc = (record: TodoMeta) => {
     return <Editor mdPath={record.path} handleChange={() => {}} />;
   };
@@ -204,8 +203,12 @@ export default function TodoList(todoListProps: TodoListProps) {
         const todoPath = path.join(__dirname, '..', 'assets', 'docs', 'todo');
         const mdPath = path.join(todoPath, `${id}.md`);
         await fs.promises.unlink(mdPath);
-        await ipcRenderer.invoke('delStoreValue', `todo.data.${id}`);
+      } catch (error) {
+        console.log('Delete todo error: ', error);
+      }
+      try {
         // 更新视图列表
+        await ipcRenderer.invoke('delStoreValue', `todo.data.${id}`);
         const newList =
           status === 0
             ? state.todoListData.filter((data) => data.id !== id)
@@ -220,7 +223,7 @@ export default function TodoList(todoListProps: TodoListProps) {
           dispatch({ type: 'setSelectedFinishedRowsKeys', value: newKeys });
         }
       } catch (error) {
-        console.log('Delete todo error: ', error);
+        console.log('Delete todo and refresh error: ', error);
       }
     };
 

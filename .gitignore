@@ -49,5 +49,6 @@ npm-debug.log.*
 *.sass.d.ts
 *.scss.d.ts
 
-assets/docs/*
-assets/mock/*
+assets/docs/todo/*
+assets/docs/markdown/*
+assets/docs/mindmap/*

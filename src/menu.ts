@@ -5,6 +5,7 @@ import {
   BrowserWindow,
   MenuItemConstructorOptions,
 } from 'electron';
+import store from './store';
 
 interface DarwinMenuItemConstructorOptions extends MenuItemConstructorOptions {
   selector?: string;
@@ -57,14 +58,36 @@ export default class MenuBuilder {
       label: 'Electron',
       submenu: [
         {
-          label: 'About ElectronReact',
+          label: 'About EMarkdown',
           selector: 'orderFrontStandardAboutPanel:',
         },
         { type: 'separator' },
-        { label: 'Services', submenu: [] },
+        {
+          label: 'Services',
+          submenu: [
+            {
+              label: '强制清空 Todo 数据',
+              click: () => {
+                store.delete('todo');
+              },
+            },
+            {
+              label: '强制清空 Markdown 数据',
+              click: () => {
+                store.delete('markdown');
+              },
+            },
+            {
+              label: '强制清空 Mindmap 数据',
+              click: () => {
+                store.delete('mindmap');
+              },
+            },
+          ],
+        },
         { type: 'separator' },
         {
-          label: 'Hide ElectronReact',
+          label: 'Hide EMarkdown',
           accelerator: 'Command+H',
           selector: 'hide:',
         },
