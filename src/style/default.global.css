@@ -383,6 +383,8 @@ tr.ant-table-expanded-row:hover > td,
   border-top: 1px solid rgba(255, 253, 238, 0.2);
 }
 
+.ant-modal-confirm-body .ant-modal-confirm-title,
+.ant-modal-confirm-body .ant-modal-confirm-content,
 .ant-modal,
 .ant-modal-title,
 .ant-modal-close {

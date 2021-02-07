@@ -26,6 +26,9 @@ ipcMain.handle('getStoreValue', (event, key) => {
 ipcMain.handle('setStoreValue', (event, key, value) => {
   return store.set(key, value);
 });
+ipcMain.handle('delStoreValue', (event, key) => {
+  return store.delete(key);
+});
 
 export default class AppUpdater {
   constructor() {

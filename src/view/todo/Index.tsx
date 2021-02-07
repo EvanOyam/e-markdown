@@ -1,5 +1,6 @@
 import React, { useReducer } from 'react';
 import styled from '@emotion/styled';
+import moment from 'moment';
 import TodoMenu from './TodoMenu';
 import TodoPanel from './TodoPanel';
 import { TodoContextProvider, reducer } from '../../context/todoContext';
@@ -17,6 +18,10 @@ export default function Todo() {
     todoListData: [] as TodoMeta[],
     finishedListData: [] as TodoMeta[],
     selectedFinishedRowsKeys: [] as (string | number)[],
+    actived: {
+      type: 'date',
+      value: moment().format('YYYY-MM-DD'),
+    },
   });
 
   return (

@@ -8,7 +8,7 @@ import TodoChart from './TodoChart';
 import MarkdownChart from './MarkdownChart';
 import MindmapChart from './MindmapChart';
 
-// todo 优化渲染代码
+// todo refactor: 抽象代码
 export default function ChartPanel() {
   return (
     <ChartPanelWrapper>

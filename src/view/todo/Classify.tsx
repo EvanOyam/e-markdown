@@ -1,13 +1,14 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { List, Badge } from 'antd';
 import {
-  CarryOutTwoTone,
   TagsTwoTone,
   CodeTwoTone,
   EditTwoTone,
+  ProfileTwoTone,
 } from '@ant-design/icons';
 import styled from '@emotion/styled';
-import { ClassifyProps } from '../../typings/todo';
+import { ipcRenderer } from 'electron';
+import { ClassifyList, ClassifyProps, ClassifyType } from '../../typings/todo';
 
 const ClassifyWrapper = styled.div`
   padding: 16px;
@@ -15,50 +16,71 @@ const ClassifyWrapper = styled.div`
   border-top: 1px solid rgba(255, 253, 238, 0.1);
 `;
 
-const tagList = [
+const classifyList: ClassifyList[] = [
   {
     id: 1,
-    icon: (
-      <CarryOutTwoTone twoToneColor="#4cb182" style={{ fontSize: '20px' }} />
-    ),
-    title: '今天',
-    todoNum: 3,
+    icon: <TagsTwoTone twoToneColor="#4cb182" style={{ fontSize: '20px' }} />,
+    title: '备忘录',
   },
   {
     id: 2,
-    icon: <TagsTwoTone twoToneColor="#ceaf67" style={{ fontSize: '20px' }} />,
-    title: '备忘录',
-    todoNum: 0,
+    icon: <CodeTwoTone twoToneColor="#634cb1" style={{ fontSize: '20px' }} />,
+    title: '工作',
   },
   {
     id: 3,
-    icon: <CodeTwoTone twoToneColor="#634cb1" style={{ fontSize: '20px' }} />,
-    title: '工作',
-    todoNum: 0,
+    icon: <EditTwoTone twoToneColor="#4c89b1" style={{ fontSize: '20px' }} />,
+    title: '学习',
   },
   {
     id: 4,
-    icon: <EditTwoTone twoToneColor="#4c89b1" style={{ fontSize: '20px' }} />,
-    title: '学习',
-    todoNum: 0,
+    icon: (
+      <ProfileTwoTone twoToneColor="#cf4e81" style={{ fontSize: '20px' }} />
+    ),
+    title: '其他',
   },
 ];
 
 export default function Classify(props: ClassifyProps) {
-  const { activedClassify, customActivedClassify } = props;
+  const { activedClassify, setActivedClassify } = props;
+  const [todoNum, setTodoNum] = useState([] as number[]);
+
+  useEffect(() => {
+    (async () => {
+      const classifyIndexPromise = [];
+      for await (const classify of classifyList) {
+        classifyIndexPromise.push(
+          ipcRenderer.invoke(
+            'getStoreValue',
+            `todo.classifyIndex.${classify.id}`
+          )
+        );
+      }
+      // todo feat: 改成 db 后，提醒数应该是未完成而非全部的
+      const classifyIndex = await Promise.all(classifyIndexPromise);
+      const todoNumList = classifyIndex.map((item) => (item ? item.length : 0));
+      setTodoNum(todoNumList);
+    })();
+  }, []);
+
   return (
     <ClassifyWrapper>
       <List
         itemLayout="horizontal"
-        dataSource={tagList}
+        dataSource={classifyList}
         split={false}
-        renderItem={(item) => (
+        renderItem={(item, index) => (
           <List.Item
             className={
               activedClassify === item.id ? 'ant-list-item-actived' : ''
             }
-            onClick={() => customActivedClassify(item.id)}
-            extra={<Badge count={item.todoNum} />}
+            onClick={() => setActivedClassify(item.id)}
+            extra={
+              <Badge
+                style={{ backgroundColor: '#5aabda' }}
+                count={todoNum[index]}
+              />
+            }
           >
             <List.Item.Meta avatar={item.icon} title={item.title} />
           </List.Item>

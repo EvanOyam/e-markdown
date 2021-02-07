@@ -1,6 +1,10 @@
+import { ReactElement } from 'react';
+
+type ClassifyType = 1 | 2 | 3 | 4;
+
 export interface ClassifyProps {
   activedClassify: number;
-  customActivedClassify: (id: number) => void;
+  setActivedClassify: (id: ClassifyType) => void;
 }
 
 export interface CustomDayPickerProps {
@@ -35,11 +39,22 @@ export interface TodoToolsBarProps {
   todoCount: number;
 }
 
+type ActivedTodoType =
+  | {
+      type: 'date';
+      value: string;
+    }
+  | {
+      type: 'classify';
+      value: ClassifyType;
+    };
+
 export interface TodoStateType {
   tableScrollH: number;
   todoListData: TodoMeta[];
   finishedListData: TodoMeta[];
   selectedFinishedRowsKeys: (string | number)[];
+  actived: ActivedTodoType;
 }
 
 export type TodoActionType =
@@ -58,6 +73,10 @@ export type TodoActionType =
   | {
       type: 'setSelectedFinishedRowsKeys';
       value: (string | number)[];
+    }
+  | {
+      type: 'changeDateOrClassify';
+      value: ActivedTodoType;
     };
 
 interface RowSelectionType {
@@ -66,8 +85,16 @@ interface RowSelectionType {
 }
 
 export interface TodoTableType {
-  scrollH: number;
   tableData: TodoMeta[];
   rowSelection: RowSelectionType;
-  loading: boolean;
+}
+
+export interface TodoListProps {
+  actived: ActivedTodoType;
+}
+
+export interface ClassifyList {
+  id: ClassifyType;
+  icon: ReactElement;
+  title: string;
 }

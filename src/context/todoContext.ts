@@ -11,6 +11,8 @@ export const reducer = (state: TodoStateType, action: TodoActionType) => {
       return { ...state, finishedListData: action.value };
     case 'setSelectedFinishedRowsKeys':
       return { ...state, selectedFinishedRowsKeys: action.value };
+    case 'changeDateOrClassify':
+      return { ...state, actived: action.value };
     default:
       return { ...state };
   }

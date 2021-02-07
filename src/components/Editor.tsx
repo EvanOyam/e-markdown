@@ -2,7 +2,7 @@ import React from 'react';
 import SimpleMDE from 'react-simplemde-editor';
 import { EditorProps } from '../typings/editor';
 
-// todo fix 分屏时闪烁的 bug
+// todo fix: 分屏时闪烁的 bug
 
 export default function Editor(props: EditorProps) {
   const { textValue, handleChange, maxHeight, withoutBorder } = props;

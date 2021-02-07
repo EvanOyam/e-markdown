@@ -1,22 +1,29 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import styled from '@emotion/styled';
 import CustomDayPicker from './CustomDayPicker';
 import Classify from './Classify';
+import { TodoContext } from '../../context/todoContext';
+import { ClassifyType } from '../../typings/todo';
 
 const TodoMenuWrapper = styled.div`
   background-color: #2e2e2e;
 `;
 
 export default function TodoMenu() {
+  const { dispatch } = useContext(TodoContext);
   const [selectedDay, setSelectedDay] = useState<Date>();
   const [activedClassify, setActivedClassify] = useState(0);
   const customSelectDay = (day: Date) => {
     setActivedClassify(0);
     setSelectedDay(day);
   };
-  const customActivedClassify = (id: number) => {
+  const handleSetActivedClassify = (id: ClassifyType) => {
     setSelectedDay(undefined);
     setActivedClassify(id);
+    dispatch({
+      type: 'changeDateOrClassify',
+      value: { type: 'classify', value: id },
+    });
   };
   return (
     <TodoMenuWrapper>
@@ -26,7 +33,7 @@ export default function TodoMenu() {
       />
       <Classify
         activedClassify={activedClassify}
-        customActivedClassify={customActivedClassify}
+        setActivedClassify={handleSetActivedClassify}
       />
     </TodoMenuWrapper>
   );

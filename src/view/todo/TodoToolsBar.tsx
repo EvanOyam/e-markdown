@@ -10,11 +10,7 @@ import {
   Row,
   Col,
 } from 'antd';
-import {
-  PlusOutlined,
-  ImportOutlined,
-  DownloadOutlined,
-} from '@ant-design/icons';
+import { PlusOutlined } from '@ant-design/icons';
 import styled from '@emotion/styled';
 import moment from 'moment';
 import { v4 as uuidv4 } from 'uuid';
@@ -42,14 +38,15 @@ export default function TodoToolsBar(props: TodoToolsBarProps) {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
-  const { title, todoCount } = props; // todo
+  // todo feat: 标题
+  const { title, todoCount } = props;
 
-  // todo
+  // todo feat: 搜索
   const onSearch = (value: string) => {
     return value;
   };
 
-  // todo 细分 catch，抽象存储索引逻辑
+  // todo refactor: 细分 catch，抽象存储索引逻辑
   const handleCreateTodo = async () => {
     try {
       setLoading(true);
@@ -65,14 +62,15 @@ export default function TodoToolsBar(props: TodoToolsBarProps) {
         classify: form.getFieldValue('classify'),
         path: `todo/${id}`,
         createdAt: +new Date(),
-        alarmDate: +new Date(), // todo 加入提醒功能
+        // todo feat: 加入提醒功能
+        alarmDate: +new Date(),
       };
       const newList = state.todoListData.concat(todoData);
 
       // 持久化 md
       await fs.promises.writeFile(mdPath, mdContent);
       // 创建日期索引
-      const date = moment().format('YYYY-MM-DD');
+      const date = moment(todoData.date).format('YYYY-MM-DD');
       const dateIndex = await ipcRenderer.invoke(
         'getStoreValue',
         `todo.dateIndex.${date}`
@@ -84,7 +82,7 @@ export default function TodoToolsBar(props: TodoToolsBarProps) {
         dateValue
       );
       // 创建分类索引
-      const classify = form.getFieldValue('classify');
+      const { classify } = todoData;
       const classifyIndex = await ipcRenderer.invoke(
         'getStoreValue',
         `todo.classifyIndex.${classify}`
@@ -104,7 +102,14 @@ export default function TodoToolsBar(props: TodoToolsBarProps) {
       storeTodoData[id] = todoData;
       await ipcRenderer.invoke('setStoreValue', `todo.data`, storeTodoData);
       // 更新列表，重置弹窗状态并关闭弹窗
-      dispatch({ type: 'setTodoListData', value: newList });
+      const { value } = state.actived;
+      if (
+        value === todoData.classify ||
+        value === moment(todoData.date).format('YYYY-MM-DD')
+      ) {
+        dispatch({ type: 'setTodoListData', value: newList });
+      }
+
       form.setFieldsValue({
         title: '',
         date: moment(),
@@ -138,8 +143,10 @@ export default function TodoToolsBar(props: TodoToolsBarProps) {
                 setIsModalVisible(true);
               }}
             />
-            {/* <ImportOutlined style={{ fontSize: '20px', cursor: 'pointer' }} /> // todo 加入导入功能 */}
-            {/* <DownloadOutlined style={{ fontSize: '20px', cursor: 'pointer' }} /> // todo 加入导出功能 */}
+            {/* // todo feat: 加入导入功能 */}
+            {/* <ImportOutlined style={{ fontSize: '20px', cursor: 'pointer' }} /> */}
+            {/* // todo feat: 加入导出功能 */}
+            {/* <DownloadOutlined style={{ fontSize: '20px', cursor: 'pointer' }} /> */}
           </ToolsBarActionWrapper>
         }
       />

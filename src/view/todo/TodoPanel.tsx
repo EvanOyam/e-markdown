@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import styled from '@emotion/styled';
 import TodoList from './TodoList';
 import TodoToolsBar from './TodoToolsBar';
+import { TodoContext } from '../../context/todoContext';
 
 const TodoPanelWrapper = styled.div`
   flex: 1;
@@ -12,10 +13,11 @@ const TodoPanelWrapper = styled.div`
 `;
 
 export default function TodoPanel() {
+  const { state } = useContext(TodoContext);
   return (
     <TodoPanelWrapper>
       <TodoToolsBar title="今天" todoCount={3} />
-      <TodoList />
+      <TodoList actived={state.actived} />
     </TodoPanelWrapper>
   );
 }
