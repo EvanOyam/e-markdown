@@ -1,7 +1,8 @@
 import React, { useState, ChangeEvent, ReactElement } from 'react';
 import useDeepCompareEffect from 'use-deep-compare-effect';
-import { Tree, Input } from 'antd';
+import { Tree, Input, Popover, Button } from 'antd';
 import { PlusOutlined, QuestionOutlined } from '@ant-design/icons';
+import { v4 as uuidv4 } from 'uuid';
 import { MarkdownMenuWrapper, MarkdownToolsbarWrapper } from './markdown.style';
 import { TreeDataType, TreeKey, TreeMeta } from '../../typings/markdown';
 
@@ -145,23 +146,39 @@ export default function MarkdownMenu() {
     );
 
   const createMarkdown = () => {
-    const testData = {
-      title: 'test',
-      key: `test-${+new Date()}`,
-      isLeaf: true,
+    const createTime = +new Date();
+    const params = {
+      id: uuidv4(),
+      parentId: '',
+      name: '',
+      createdAt: createTime,
+      updatedAt: createTime,
     };
-    const newTreeData = treeData.concat(testData);
-    setTreeData(newTreeData);
+    // const testData = {
+    //   title: 'test',
+    //   key: `test-${+new Date()}`,
+    //   isLeaf: true,
+    // };
+    // const newTreeData = treeData.concat(testData);
+    // setTreeData(newTreeData);
   };
 
+  const renderCreateSelect = () => {
+    return (
+      <>
+        <Button type="link">新建分类</Button>
+        <br />
+        <Button type="link">新建文档</Button>
+      </>
+    );
+  };
   return (
     <MarkdownMenuWrapper>
       <MarkdownToolsbarWrapper>
         <Search placeholder="Search" onChange={onChange} />
-        <PlusOutlined
-          onClick={createMarkdown}
-          style={{ fontSize: '18px', cursor: 'pointer' }}
-        />
+        <Popover trigger="click" content={renderCreateSelect}>
+          <PlusOutlined style={{ fontSize: '18px', cursor: 'pointer' }} />
+        </Popover>
         <QuestionOutlined style={{ fontSize: '18px', cursor: 'pointer' }} />
       </MarkdownToolsbarWrapper>
       <DirectoryTree

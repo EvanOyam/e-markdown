@@ -16,6 +16,13 @@ import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
 import store from './store';
+import { initDB } from './db/index';
+import {
+  createMd,
+  getMdList,
+  createMdClassify,
+  getMdClassify,
+} from './db/markdown';
 
 ipcMain.handle('getStoreValue', (event, key) => {
   return store.get(key);
@@ -26,6 +33,23 @@ ipcMain.handle('setStoreValue', (event, key, value) => {
 ipcMain.handle('delStoreValue', (event, key) => {
   return store.delete(key);
 });
+
+(async () => {
+  const db = await initDB();
+  ipcMain.handle('createMd', (event, params) => {
+    return createMd(db, params);
+  });
+  // todo feat: 筛选条件
+  ipcMain.handle('getMdList', (event) => {
+    return getMdList(db);
+  });
+  ipcMain.handle('createMdClassify', (event, params) => {
+    return createMdClassify(db, params);
+  });
+  ipcMain.handle('getMdClassify', (event) => {
+    return getMdClassify(db);
+  });
+})();
 
 export default class AppUpdater {
   constructor() {

@@ -52,3 +52,4 @@ npm-debug.log.*
 assets/docs/todo/*
 assets/docs/markdown/*
 assets/docs/mindmap/*
+assets/data/*
