@@ -36,10 +36,6 @@ export const mdFields: FieldsType[] = [
 
 export const mdClassifyFields: FieldsType[] = [
   {
-    name: 'parentId',
-    type: 'TEXT',
-  },
-  {
     name: 'name',
     type: 'TEXT',
     require: true,

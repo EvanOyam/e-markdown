@@ -1,6 +1,11 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { MdClassifyType, MdType } from '../typings/database';
+import {
+  MdClassifyType,
+  MdType,
+  MenuClassifyType,
+  MenuMdType,
+} from '../typings/database';
 
 export const createMd = async (db: any, params: MdType) => {
   try {
@@ -27,12 +32,25 @@ export const createMd = async (db: any, params: MdType) => {
   }
 };
 
-export const getMdList = (db: any) => {
+export const getMdList = (db: any, fileds?: string[], query?: any) => {
+  const filedsStr = fileds && fileds.length !== 0 ? fileds.join(', ') : '*';
+  let queryStr = '';
+  if (query) {
+    for (const key in query) {
+      if (Object.prototype.hasOwnProperty.call(query, key)) {
+        queryStr += `${key}=${query[key]} AND `;
+      }
+    }
+    queryStr = queryStr.substr(0, queryStr.length - 5);
+  }
+  const sql = queryStr
+    ? `SELECT ${filedsStr} FROM markdown WHERE ${queryStr}`
+    : `SELECT ${filedsStr} FROM markdown`;
   try {
-    const stmt = db.prepare('SELECT * FROM markdown');
+    const stmt = db.prepare(sql);
     const res = [];
     while (stmt.step()) {
-      res.push(stmt.get());
+      res.push(stmt.getAsObject());
     }
     return res;
   } catch (error) {
@@ -42,12 +60,11 @@ export const getMdList = (db: any) => {
 
 export const createMdClassify = async (db: any, params: MdClassifyType) => {
   try {
-    const { id, parentId, name, createdAt, updatedAt } = params;
+    const { id, name, createdAt, updatedAt } = params;
     db.run(
-      'INSERT INTO markdownClassify VALUES (:id, :parentId, :name, :createdAt, :updatedAt);',
+      'INSERT INTO markdownClassify VALUES (:id, :name, :createdAt, :updatedAt);',
       {
         ':id': id,
-        ':parentId': parentId,
         ':name': name,
         ':createdAt': createdAt,
         ':updatedAt': updatedAt,
@@ -66,12 +83,33 @@ export const createMdClassify = async (db: any, params: MdClassifyType) => {
 
 export const getMdClassify = (db: any) => {
   try {
-    const stmt = db.prepare('SELECT * FROM markdownClassify');
-    const res = [];
+    const stmt = db.prepare('SELECT id, name FROM markdownClassify');
+    const classifyList: MenuClassifyType[] = [];
     while (stmt.step()) {
-      res.push(stmt.get());
+      const { id, name } = stmt.getAsObject();
+      const classify = {
+        title: name,
+        key: id,
+        children: [] as MenuMdType[],
+      };
+      classifyList.push(classify);
     }
-    return res;
+    const mdList = getMdList(db) || [];
+    return classifyList.map((classify) => {
+      const children = mdList
+        .filter((md) => md.classify === classify.key)
+        .map((md) => {
+          return {
+            title: md.title,
+            key: md.id,
+            isLeaf: true,
+          };
+        });
+      return {
+        ...classify,
+        children,
+      };
+    });
   } catch (error) {
     console.log('IPC "getMdClassify" error: ', error);
   }

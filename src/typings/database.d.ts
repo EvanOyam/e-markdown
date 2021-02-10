@@ -16,8 +16,18 @@ export interface MdType {
 
 export interface MdClassifyType {
   id: string; // 分类 id
-  parentId: string; // 子类 id
   name: string; // 名称
   createdAt: number; // 创建时间
   updatedAt: number; // 更新时间
+}
+
+interface MenuMdType {
+  key: string;
+  title: string;
+}
+
+export interface MenuClassifyType {
+  title: string;
+  key: string;
+  children: MenuMdType[];
 }

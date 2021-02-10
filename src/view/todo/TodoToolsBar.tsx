@@ -50,7 +50,7 @@ export default function TodoToolsBar(props: TodoToolsBarProps) {
     try {
       setLoading(true);
       await form.validateFields();
-      const id = uuidv4();
+      const id = uuidv4().replace(/-/g, '');
       const todoPath = path.join(__dirname, '..', 'assets', 'docs', 'todo');
       const mdPath = path.join(todoPath, `${id}.md`);
       const todoData: TodoMeta = {
