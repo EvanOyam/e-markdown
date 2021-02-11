@@ -1,4 +1,10 @@
-import React, { useState, ChangeEvent, ReactElement, useEffect } from 'react';
+import React, {
+  useState,
+  ChangeEvent,
+  ReactElement,
+  useEffect,
+  useContext,
+} from 'react';
 import useDeepCompareEffect from 'use-deep-compare-effect';
 import { Tree, Input, Popover, Button, Modal, Form, Select } from 'antd';
 import { PlusOutlined, QuestionOutlined } from '@ant-design/icons';
@@ -6,12 +12,30 @@ import { v4 as uuidv4 } from 'uuid';
 import { ipcRenderer } from 'electron';
 import * as path from 'path';
 import * as fs from 'fs';
-import { MarkdownMenuWrapper, MarkdownToolsbarWrapper } from './markdown.style';
+import styled from '@emotion/styled';
 import { TreeDataType, TreeKey, TreeMeta } from '../../typings/markdown';
+import { MdContext } from '../../context/markdownContext';
 
 const { Search } = Input;
 const { Option } = Select;
 const { DirectoryTree } = Tree;
+
+const MarkdownMenuWrapper = styled.div`
+  background-color: #2e2e2e;
+  padding: 8px;
+  min-width: 284px;
+  max-width: 500px;
+`;
+
+const MarkdownToolsbarWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  color: #fbf8f5;
+  margin-bottom: 12px;
+  .anticon-plus {
+    margin: 0 6px;
+  }
+`;
 
 const generateList = (
   rawData: TreeDataType<string>[],
@@ -43,6 +67,8 @@ const getParentKey = (key: TreeKey, tree: TreeDataType<string>[]): TreeKey => {
 };
 
 export default function MarkdownMenu() {
+  // todo refactor: state 整合进 context
+  const { dispatch } = useContext(MdContext);
   const [menuData, setMenuData] = useState([] as TreeDataType<string>[]); // 原始数据
   const [searchMenuData, setSearchMenuData] = useState(
     [] as TreeMeta<string>[]
@@ -80,7 +106,7 @@ export default function MarkdownMenu() {
   }, [menuData]);
 
   // 搜索
-  const onChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
     if (!value) {
       setSearchValue('');
@@ -96,6 +122,15 @@ export default function MarkdownMenu() {
         .filter((item, i, self) => item && self.indexOf(item) === i);
       setSearchValue(value);
       setExpandedKeys(keys);
+    }
+  };
+
+  // 选择节点
+  const handleSelect = (selectedKeys: React.Key[], info: any) => {
+    const isMd = info.node.isLeaf;
+    const mdId = selectedKeys[0] as string;
+    if (isMd) {
+      dispatch({ type: 'setOpenMdId', value: mdId });
     }
   };
 
@@ -283,13 +318,14 @@ export default function MarkdownMenu() {
   return (
     <MarkdownMenuWrapper>
       <MarkdownToolsbarWrapper>
-        <Search placeholder="Search" onChange={onChange} />
+        <Search placeholder="Search" onChange={handleChange} />
         <Popover trigger="click" content={renderCreateSelect}>
           <PlusOutlined style={{ fontSize: '18px', cursor: 'pointer' }} />
         </Popover>
         <QuestionOutlined style={{ fontSize: '18px', cursor: 'pointer' }} />
       </MarkdownToolsbarWrapper>
       <DirectoryTree
+        onSelect={handleSelect}
         expandedKeys={expandedKeys}
         onExpand={(keys: TreeKey[]) => setExpandedKeys(keys)}
         treeData={handleTreeData(menuData)}

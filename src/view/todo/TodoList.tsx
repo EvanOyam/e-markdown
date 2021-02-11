@@ -10,6 +10,7 @@ import { TodoListProps, TodoMeta, TodoTableType } from '../../typings/todo';
 import Editor from '../../components/Editor';
 import useResize from '../../hooks/useResize';
 import { TodoContext } from '../../context/todoContext';
+import TodoDetail from './TodoDetail';
 
 const { Column } = Table;
 const { confirm } = Modal;
@@ -190,7 +191,7 @@ export default function TodoList(todoListProps: TodoListProps) {
   // ****** 初始化数据 ******
 
   const renderDesc = (record: TodoMeta) => {
-    return <Editor mdPath={record.path} handleChange={() => {}} />;
+    return <TodoDetail todoId={record.id} />;
   };
 
   const renderTable = (tableInfo: TodoTableType) => {

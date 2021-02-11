@@ -102,3 +102,7 @@ export interface ClassifyList {
   icon: ReactElement;
   title: string;
 }
+
+export interface TodoDetailProps {
+  todoId: string;
+}

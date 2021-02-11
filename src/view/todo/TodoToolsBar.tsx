@@ -203,6 +203,7 @@ export default function TodoToolsBar(props: TodoToolsBarProps) {
         </Form>
         <Editor
           textValue={mdContent}
+          handleSave={handleCreateTodo}
           handleChange={(text: string) => {
             setMdContent(text);
           }}
