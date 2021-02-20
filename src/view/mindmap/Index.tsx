@@ -1,16 +1,20 @@
 import React from 'react';
+import styled from '@emotion/styled';
 import MindmapMenu from './MindmapMenu';
-import { MindmapPanel, MindmapWrapper } from './mindmap.style';
-import Mindmap from './Mindmap';
+import MindmapPanel from './MindmapPanel';
+
+const MindmapWrapper = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+`;
 
 // todo refactor: 抽象 menu
 export default function Markdown() {
   return (
     <MindmapWrapper>
       <MindmapMenu />
-      <MindmapPanel>
-        <Mindmap />
-      </MindmapPanel>
+      <MindmapPanel />
     </MindmapWrapper>
   );
 }

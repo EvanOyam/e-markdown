@@ -4,8 +4,23 @@ import * as markmap from 'markmap-view';
 import * as fs from 'fs';
 import * as path from 'path';
 import { Spin } from 'antd';
+import styled from '@emotion/styled';
 import { CustomEventTarget, SvgSizeType } from '../../typings/mindmap';
 import useResize from '../../hooks/useResize';
+
+const MindmapPanelWrapper = styled.div`
+  flex: 1;
+  background-color: #272b31;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  overflow-y: scroll;
+  height: 100vh;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
 
 const { BrowserWindow } = require('electron').remote;
 
@@ -18,7 +33,7 @@ const { root } = transformer.transform(markdown);
 
 let timer: any;
 
-export default function Mindmap() {
+export default function MindmapPanel() {
   const [svgSize, setSvgSize] = useState({} as SvgSizeType);
   const [spinning, setSpinning] = useState(false);
   const mindmapRef = useRef<SVGSVGElement>(null);
@@ -80,11 +95,13 @@ export default function Mindmap() {
     };
   }, []);
   return (
-    <Spin spinning={spinning}>
-      <svg
-        ref={mindmapRef}
-        style={{ ...svgSize, color: 'rgb(236, 236, 236)' }}
-      />
-    </Spin>
+    <MindmapPanelWrapper>
+      <Spin spinning={spinning}>
+        <svg
+          ref={mindmapRef}
+          style={{ ...svgSize, color: 'rgb(236, 236, 236)' }}
+        />
+      </Spin>
+    </MindmapPanelWrapper>
   );
 }

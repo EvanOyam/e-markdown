@@ -2,11 +2,28 @@ import React, { useState, ChangeEvent, ReactElement } from 'react';
 import useDeepCompareEffect from 'use-deep-compare-effect';
 import { Tree, Input } from 'antd';
 import { PlusOutlined, QuestionOutlined } from '@ant-design/icons';
-import { MindmapMenuWrapper, MindmapToolsbarWrapper } from './mindmap.style';
+import styled from '@emotion/styled';
 import { TreeDataType, TreeKey, TreeMeta } from '../../typings/markdown';
 
 const { Search } = Input;
 const { DirectoryTree } = Tree;
+
+const MindmapMenuWrapper = styled.div`
+  background-color: #2e2e2e;
+  padding: 8px;
+  min-width: 284px;
+  max-width: 500px;
+`;
+
+const MindmapToolsbarWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  color: #fbf8f5;
+  margin-bottom: 12px;
+  .anticon-plus {
+    margin: 0 6px;
+  }
+`;
 
 const data = [
   {
