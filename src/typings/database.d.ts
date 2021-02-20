@@ -10,6 +10,7 @@ export interface MdType {
   title: string; // 标题
   mdpath: string; // 文件路径
   classify?: string; // 分类
+  type: 'markdown' | 'mindmap'; // md 的类型
   createdAt: number; // 创建时间
   updatedAt: number; // 更新时间
 }
@@ -17,6 +18,7 @@ export interface MdType {
 export interface MdClassifyType {
   id: string; // 分类 id
   name: string; // 名称
+  type: 'markdown' | 'mindmap'; // md 的类型
   createdAt: number; // 创建时间
   updatedAt: number; // 更新时间
 }

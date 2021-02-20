@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useReducer } from 'react';
 import styled from '@emotion/styled';
-import MindmapMenu from './MindmapMenu';
+import MindmapMenu from '../../components/TreeMenu';
 import MindmapPanel from './MindmapPanel';
+import { MdContextProvider, mdReducer } from '../../context/markdownContext';
 
 const MindmapWrapper = styled.div`
   width: 100%;
@@ -11,10 +12,13 @@ const MindmapWrapper = styled.div`
 
 // todo refactor: 抽象 menu
 export default function Markdown() {
+  const [state, dispatch] = useReducer(mdReducer, { openMdId: '' });
   return (
-    <MindmapWrapper>
-      <MindmapMenu />
-      <MindmapPanel />
-    </MindmapWrapper>
+    <MdContextProvider value={{ state, dispatch }}>
+      <MindmapWrapper>
+        <MindmapMenu />
+        <MindmapPanel />
+      </MindmapWrapper>
+    </MdContextProvider>
   );
 }

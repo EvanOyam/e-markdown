@@ -61,8 +61,8 @@ ipcMain.handle('delStoreValue', (event, key) => {
   ipcMain.handle('renameMdClassify', (event, params) => {
     return renameMdClassify(db, params);
   });
-  ipcMain.handle('getMdClassify', (event) => {
-    return getMdClassify(db);
+  ipcMain.handle('getMdClassify', (event, type) => {
+    return getMdClassify(db, type);
   });
 })();
 

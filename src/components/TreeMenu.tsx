@@ -14,8 +14,9 @@ import * as path from 'path';
 import * as fs from 'fs';
 import styled from '@emotion/styled';
 import { EventDataNode } from 'antd/lib/tree';
-import { TreeDataType, TreeKey, TreeMeta } from '../../typings/markdown';
-import { MdContext } from '../../context/markdownContext';
+import { useLocation } from 'react-router-dom';
+import { TreeDataType, TreeKey, TreeMeta } from '../typings/markdown';
+import { MdContext } from '../context/markdownContext';
 
 const { Menu, MenuItem } = remote;
 const { Search } = Input;
@@ -83,20 +84,25 @@ export default function MarkdownMenu() {
   const [mdForm] = Form.useForm(); // 新建文档的表单
   const [renameForm] = Form.useForm(); // 新建文档的表单
 
+  // 获取路由信息
+  const location = useLocation();
+  const routerType = location.pathname === '/markdown' ? 'markdown' : 'mindmap';
+
   // 获取原始数据
   useEffect(() => {
     (async () => {
-      let classify = await ipcRenderer.invoke('getMdClassify');
+      let classify = await ipcRenderer.invoke('getMdClassify', routerType);
       if (!classify || classify.length === 0) {
         const createTime = +new Date();
         const params = {
           id: uuidv4().replace(/-/g, ''),
           name: '默认分类',
+          type: routerType,
           createdAt: createTime,
           updatedAt: createTime,
         };
         await ipcRenderer.invoke('createMdClassify', params);
-        classify = await ipcRenderer.invoke('getMdClassify');
+        classify = await ipcRenderer.invoke('getMdClassify', routerType);
       }
       setMenuData(classify);
     })();
@@ -179,11 +185,12 @@ export default function MarkdownMenu() {
       const params = {
         id: uuidv4().replace(/-/g, ''),
         name: classifyForm.getFieldValue('name'),
+        type: routerType,
         createdAt: createTime,
         updatedAt: createTime,
       };
       await ipcRenderer.invoke('createMdClassify', params);
-      const classify = await ipcRenderer.invoke('getMdClassify');
+      const classify = await ipcRenderer.invoke('getMdClassify', routerType);
       setMenuData(classify);
       setVisibleModal('');
     } catch (error) {
@@ -211,13 +218,14 @@ export default function MarkdownMenu() {
         title: mdForm.getFieldValue('title'),
         mdpath: mdPath,
         classify: mdForm.getFieldValue('classify'),
+        type: routerType,
         createdAt: date,
         updatedAt: date,
       };
       await ipcRenderer.invoke('createMd', params);
 
       // 更新分类树且关闭弹窗
-      const classify = await ipcRenderer.invoke('getMdClassify');
+      const classify = await ipcRenderer.invoke('getMdClassify', routerType);
       setMenuData(classify);
       setVisibleModal('');
     } catch (error) {
@@ -337,7 +345,7 @@ export default function MarkdownMenu() {
                 id: renameInfo[2],
               };
         await ipcRenderer.invoke(type, params);
-        const classify = await ipcRenderer.invoke('getMdClassify');
+        const classify = await ipcRenderer.invoke('getMdClassify', routerType);
         setMenuData(classify);
         setVisibleModal('');
       } catch (error) {
@@ -390,7 +398,10 @@ export default function MarkdownMenu() {
         try {
           const delType = isLeaf ? 'deleteMd' : 'deleteMdClassify';
           await ipcRenderer.invoke(delType, key);
-          const classify = await ipcRenderer.invoke('getMdClassify');
+          const classify = await ipcRenderer.invoke(
+            'getMdClassify',
+            routerType
+          );
           setMenuData(classify);
           if (!isLeaf || key === state.openMdId) {
             dispatch({ type: 'setOpenMdId', value: '' });

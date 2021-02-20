@@ -1,6 +1,6 @@
 import React, { useReducer } from 'react';
 import styled from '@emotion/styled';
-import MarkdownMenu from './MarkdownMenu';
+import MarkdownMenu from '../../components/TreeMenu';
 import MarkdownPanel from './MarkdownPanel';
 import { MdContextProvider, mdReducer } from '../../context/markdownContext';
 

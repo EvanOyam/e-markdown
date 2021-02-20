@@ -9,14 +9,15 @@ import {
 
 export const createMd = async (db: any, params: MdType) => {
   try {
-    const { id, title, mdpath, classify, createdAt, updatedAt } = params;
+    const { id, title, mdpath, classify, type, createdAt, updatedAt } = params;
     db.run(
-      'INSERT INTO markdown VALUES (:id, :title, :path, :classify, :createdAt, :updatedAt);',
+      'INSERT INTO markdown VALUES (:id, :title, :path, :classify, :type, :createdAt, :updatedAt);',
       {
         ':id': id,
         ':title': title,
         ':path': mdpath,
         ':classify': classify || '',
+        ':type': type,
         ':createdAt': createdAt,
         ':updatedAt': updatedAt,
       }
@@ -89,12 +90,13 @@ export const getMdList = (db: any, fileds?: string[], query?: any) => {
 
 export const createMdClassify = async (db: any, params: MdClassifyType) => {
   try {
-    const { id, name, createdAt, updatedAt } = params;
+    const { id, name, type, createdAt, updatedAt } = params;
     db.run(
-      'INSERT INTO markdownClassify VALUES (:id, :name, :createdAt, :updatedAt);',
+      'INSERT INTO markdownClassify VALUES (:id, :name, :type, :createdAt, :updatedAt);',
       {
         ':id': id,
         ':name': name,
+        ':type': type,
         ':createdAt': createdAt,
         ':updatedAt': updatedAt,
       }
@@ -124,9 +126,11 @@ export const deleteMdClassify = async (db: any, id: string) => {
   }
 };
 
-export const getMdClassify = (db: any) => {
+export const getMdClassify = (db: any, type: 'markdown' | 'mindmap') => {
   try {
-    const stmt = db.prepare('SELECT id, name FROM markdownClassify');
+    const stmt = db.prepare(
+      `SELECT id, name FROM markdownClassify WHERE type='${type}'`
+    );
     const classifyList: MenuClassifyType[] = [];
     while (stmt.step()) {
       const { id, name } = stmt.getAsObject();

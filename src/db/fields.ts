@@ -1,12 +1,5 @@
 import { FieldsType } from '../typings/database';
 
-export const todoFields: FieldsType[] = [
-  {
-    name: 'age',
-    type: 'INTEGER',
-  },
-];
-
 export const mdFields: FieldsType[] = [
   {
     name: 'title',
@@ -20,6 +13,10 @@ export const mdFields: FieldsType[] = [
   },
   {
     name: 'classify',
+    type: 'TEXT',
+  },
+  {
+    name: 'type',
     type: 'TEXT',
   },
   {
@@ -41,6 +38,11 @@ export const mdClassifyFields: FieldsType[] = [
     require: true,
   },
   {
+    name: 'type',
+    type: 'TEXT',
+    require: true,
+  },
+  {
     name: 'createdAt',
     type: 'INTEGER',
     require: true,
@@ -49,12 +51,5 @@ export const mdClassifyFields: FieldsType[] = [
     name: 'updatedAt',
     type: 'INTEGER',
     require: true,
-  },
-];
-
-export const mindmapFields: FieldsType[] = [
-  {
-    name: 'age',
-    type: 'INTEGER',
   },
 ];
