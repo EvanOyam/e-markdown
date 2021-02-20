@@ -32,6 +32,35 @@ export const createMd = async (db: any, params: MdType) => {
   }
 };
 
+export const deleteMd = async (db: any, id: string) => {
+  try {
+    db.run(`DELETE FROM markdown WHERE id='${id}'`);
+    const data = db.export();
+    const buffer = Buffer.from(data);
+    await fs.promises.writeFile(
+      path.join(__dirname, '..', '..', 'assets', 'data', 'database.sqlite'),
+      buffer
+    );
+  } catch (error) {
+    console.log('IPC "deleteMd" error: ', error);
+  }
+};
+
+export const renameMd = async (db: any, params: Partial<MdType>) => {
+  const { title, id } = params;
+  try {
+    db.run(`UPDATE markdown SET title='${title}' WHERE id='${id}'`);
+    const data = db.export();
+    const buffer = Buffer.from(data);
+    await fs.promises.writeFile(
+      path.join(__dirname, '..', '..', 'assets', 'data', 'database.sqlite'),
+      buffer
+    );
+  } catch (error) {
+    console.log('IPC "renameMd" error: ', error);
+  }
+};
+
 export const getMdList = (db: any, fileds?: string[], query?: any) => {
   const filedsStr = fileds && fileds.length !== 0 ? fileds.join(', ') : '*';
   let queryStr = '';
@@ -81,6 +110,20 @@ export const createMdClassify = async (db: any, params: MdClassifyType) => {
   }
 };
 
+export const deleteMdClassify = async (db: any, id: string) => {
+  try {
+    db.run(`DELETE FROM markdownClassify WHERE id='${id}'`);
+    const data = db.export();
+    const buffer = Buffer.from(data);
+    await fs.promises.writeFile(
+      path.join(__dirname, '..', '..', 'assets', 'data', 'database.sqlite'),
+      buffer
+    );
+  } catch (error) {
+    console.log('IPC "deleteMdClassify" error: ', error);
+  }
+};
+
 export const getMdClassify = (db: any) => {
   try {
     const stmt = db.prepare('SELECT id, name FROM markdownClassify');
@@ -112,5 +155,23 @@ export const getMdClassify = (db: any) => {
     });
   } catch (error) {
     console.log('IPC "getMdClassify" error: ', error);
+  }
+};
+
+export const renameMdClassify = async (
+  db: any,
+  params: Partial<MdClassifyType>
+) => {
+  const { name, id } = params;
+  try {
+    db.run(`UPDATE markdownClassify SET name='${name}' WHERE id='${id}'`);
+    const data = db.export();
+    const buffer = Buffer.from(data);
+    await fs.promises.writeFile(
+      path.join(__dirname, '..', '..', 'assets', 'data', 'database.sqlite'),
+      buffer
+    );
+  } catch (error) {
+    console.log('IPC "renameMd" error: ', error);
   }
 };

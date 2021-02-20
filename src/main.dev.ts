@@ -19,9 +19,13 @@ import store from './store';
 import { initDB } from './db/index';
 import {
   createMd,
+  deleteMd,
   getMdList,
   createMdClassify,
   getMdClassify,
+  deleteMdClassify,
+  renameMdClassify,
+  renameMd,
 } from './db/markdown';
 
 ipcMain.handle('getStoreValue', (event, key) => {
@@ -39,12 +43,23 @@ ipcMain.handle('delStoreValue', (event, key) => {
   ipcMain.handle('createMd', (event, params) => {
     return createMd(db, params);
   });
-  // todo feat: 筛选条件
+  ipcMain.handle('deleteMd', (event, id) => {
+    return deleteMd(db, id);
+  });
+  ipcMain.handle('renameMd', (event, params) => {
+    return renameMd(db, params);
+  });
   ipcMain.handle('getMdList', (event) => {
     return getMdList(db);
   });
   ipcMain.handle('createMdClassify', (event, params) => {
     return createMdClassify(db, params);
+  });
+  ipcMain.handle('deleteMdClassify', (event, id) => {
+    return deleteMdClassify(db, id);
+  });
+  ipcMain.handle('renameMdClassify', (event, params) => {
+    return renameMdClassify(db, params);
   });
   ipcMain.handle('getMdClassify', (event) => {
     return getMdClassify(db);

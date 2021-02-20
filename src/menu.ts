@@ -20,13 +20,6 @@ export default class MenuBuilder {
   }
 
   buildMenu(): Menu {
-    if (
-      process.env.NODE_ENV === 'development' ||
-      process.env.DEBUG_PROD === 'true'
-    ) {
-      this.setupDevelopmentEnvironment();
-    }
-
     const template =
       process.platform === 'darwin'
         ? this.buildDarwinTemplate()
@@ -38,21 +31,6 @@ export default class MenuBuilder {
     return menu;
   }
 
-  setupDevelopmentEnvironment(): void {
-    this.mainWindow.webContents.on('context-menu', (_, props) => {
-      const { x, y } = props;
-
-      Menu.buildFromTemplate([
-        {
-          label: 'Inspect element',
-          click: () => {
-            this.mainWindow.webContents.inspectElement(x, y);
-          },
-        },
-      ]).popup({ window: this.mainWindow });
-    });
-  }
-
   buildDarwinTemplate(): MenuItemConstructorOptions[] {
     const subMenuAbout: DarwinMenuItemConstructorOptions = {
       label: 'Electron',
@@ -62,29 +40,6 @@ export default class MenuBuilder {
           selector: 'orderFrontStandardAboutPanel:',
         },
         { type: 'separator' },
-        {
-          label: 'Services',
-          submenu: [
-            {
-              label: '强制清空 Todo 数据',
-              click: () => {
-                store.delete('todo');
-              },
-            },
-            {
-              label: '强制清空 Markdown 数据',
-              click: () => {
-                store.delete('markdown');
-              },
-            },
-            {
-              label: '强制清空 Mindmap 数据',
-              click: () => {
-                store.delete('mindmap');
-              },
-            },
-          ],
-        },
         { type: 'separator' },
         {
           label: 'Hide EMarkdown',
@@ -205,6 +160,35 @@ export default class MenuBuilder {
         },
       ],
     };
+    const subMenuDev: MenuItemConstructorOptions = {
+      label: 'Dev',
+      submenu: [
+        {
+          label: '强制清空 Todo 数据',
+          click: () => {
+            store.delete('todo');
+          },
+        },
+        {
+          label: '强制清空 Markdown 数据',
+          click: () => {
+            store.delete('markdown');
+          },
+        },
+        {
+          label: '强制清空 Mindmap 数据',
+          click: () => {
+            store.delete('mindmap');
+          },
+        },
+        {
+          label: '审查元素',
+          click: () => {
+            this.mainWindow.webContents.openDevTools();
+          },
+        },
+      ],
+    };
 
     const subMenuView =
       process.env.NODE_ENV === 'development' ||
@@ -212,7 +196,22 @@ export default class MenuBuilder {
         ? subMenuViewDev
         : subMenuViewProd;
 
-    return [subMenuAbout, subMenuEdit, subMenuView, subMenuWindow, subMenuHelp];
+    const menuArr = [
+      subMenuAbout,
+      subMenuEdit,
+      subMenuView,
+      subMenuWindow,
+      subMenuHelp,
+    ];
+
+    if (
+      process.env.NODE_ENV === 'development' ||
+      process.env.DEBUG_PROD === 'true'
+    ) {
+      menuArr.push(subMenuDev);
+    }
+
+    return menuArr;
   }
 
   buildDefaultTemplate() {

@@ -7,18 +7,21 @@ import React, {
 } from 'react';
 import useDeepCompareEffect from 'use-deep-compare-effect';
 import { Tree, Input, Popover, Button, Modal, Form, Select } from 'antd';
-import { PlusOutlined, QuestionOutlined } from '@ant-design/icons';
+import { PlusOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import { v4 as uuidv4 } from 'uuid';
-import { ipcRenderer } from 'electron';
+import { ipcRenderer, remote } from 'electron';
 import * as path from 'path';
 import * as fs from 'fs';
 import styled from '@emotion/styled';
+import { EventDataNode } from 'antd/lib/tree';
 import { TreeDataType, TreeKey, TreeMeta } from '../../typings/markdown';
 import { MdContext } from '../../context/markdownContext';
 
+const { Menu, MenuItem } = remote;
 const { Search } = Input;
 const { Option } = Select;
 const { DirectoryTree } = Tree;
+const { confirm } = Modal;
 
 const MarkdownMenuWrapper = styled.div`
   background-color: #2e2e2e;
@@ -33,7 +36,7 @@ const MarkdownToolsbarWrapper = styled.div`
   color: #fbf8f5;
   margin-bottom: 12px;
   .anticon-plus {
-    margin: 0 6px;
+    margin-left: 6px;
   }
 `;
 
@@ -68,7 +71,7 @@ const getParentKey = (key: TreeKey, tree: TreeDataType<string>[]): TreeKey => {
 
 export default function MarkdownMenu() {
   // todo refactor: state 整合进 context
-  const { dispatch } = useContext(MdContext);
+  const { state, dispatch } = useContext(MdContext);
   const [menuData, setMenuData] = useState([] as TreeDataType<string>[]); // 原始数据
   const [searchMenuData, setSearchMenuData] = useState(
     [] as TreeMeta<string>[]
@@ -78,6 +81,7 @@ export default function MarkdownMenu() {
   const [visibleModal, setVisibleModal] = useState(''); // 新建分类或文章弹窗
   const [classifyForm] = Form.useForm(); // 新建分类的表单
   const [mdForm] = Form.useForm(); // 新建文档的表单
+  const [renameForm] = Form.useForm(); // 新建文档的表单
 
   // 获取原始数据
   useEffect(() => {
@@ -315,6 +319,118 @@ export default function MarkdownMenu() {
     );
   };
 
+  // 重命名弹窗
+  const renderRenameModal = () => {
+    const rename = async () => {
+      try {
+        await renameForm.validateFields();
+        const renameInfo = visibleModal.split('-');
+        const type = renameInfo[1] === 'md' ? 'renameMd' : 'renameMdClassify';
+        const params =
+          renameInfo[1] === 'md'
+            ? {
+                title: renameForm.getFieldValue('name'),
+                id: renameInfo[2],
+              }
+            : {
+                name: renameForm.getFieldValue('name'),
+                id: renameInfo[2],
+              };
+        await ipcRenderer.invoke(type, params);
+        const classify = await ipcRenderer.invoke('getMdClassify');
+        setMenuData(classify);
+        setVisibleModal('');
+      } catch (error) {
+        console.log('Create markdown classify error: ', error);
+      }
+    };
+    return (
+      <Modal
+        title="重命名"
+        visible={visibleModal.startsWith('rename')}
+        onCancel={() => setVisibleModal('')}
+        centered
+        footer={
+          <Button type="primary" onClick={rename}>
+            确定
+          </Button>
+        }
+      >
+        <Form
+          form={renameForm}
+          labelCol={{ span: 4 }}
+          wrapperCol={{ span: 20 }}
+        >
+          <Form.Item
+            label="名称"
+            name="name"
+            rules={[{ required: true, message: '名称不能为空' }]}
+          >
+            <Input />
+          </Form.Item>
+        </Form>
+      </Modal>
+    );
+  };
+
+  // 右键
+  const handleRightClick = (node: EventDataNode) => {
+    if (node.pos === '0-0') return;
+    const { isLeaf, key } = node;
+    const delConfirm = () => {
+      const title = isLeaf ? '确定删除文章吗？' : '确认删除分类吗？';
+      const content = (
+        <p>
+          开发者懒得做回收站，删除后不可恢复！
+          <br />
+          {!isLeaf && '删除分类会删除分类下所有文章！'}
+        </p>
+      );
+      const del = async () => {
+        try {
+          const delType = isLeaf ? 'deleteMd' : 'deleteMdClassify';
+          await ipcRenderer.invoke(delType, key);
+          const classify = await ipcRenderer.invoke('getMdClassify');
+          setMenuData(classify);
+          if (!isLeaf || key === state.openMdId) {
+            dispatch({ type: 'setOpenMdId', value: '' });
+          }
+        } catch (error) {
+          console.log('Delete markdown error: ', error);
+        }
+      };
+
+      confirm({
+        centered: true,
+        title,
+        icon: <ExclamationCircleOutlined />,
+        content,
+        onOk: del,
+        onCancel() {},
+      });
+    };
+    const rename = () => {
+      const type = isLeaf ? 'md' : 'classify';
+      renameForm.setFieldsValue({ name: '' });
+      setVisibleModal(`rename-${type}-${key}`);
+    };
+
+    const menu = new Menu();
+    menu.append(
+      new MenuItem({
+        label: '删除',
+        click: delConfirm,
+      })
+    );
+    menu.append(
+      new MenuItem({
+        label: '重命名',
+        click: rename,
+      })
+    );
+    menu.popup({ window: remote.getCurrentWindow() });
+  };
+
   return (
     <MarkdownMenuWrapper>
       <MarkdownToolsbarWrapper>
@@ -322,9 +438,9 @@ export default function MarkdownMenu() {
         <Popover trigger="click" content={renderCreateSelect}>
           <PlusOutlined style={{ fontSize: '18px', cursor: 'pointer' }} />
         </Popover>
-        <QuestionOutlined style={{ fontSize: '18px', cursor: 'pointer' }} />
       </MarkdownToolsbarWrapper>
       <DirectoryTree
+        onRightClick={({ node }) => handleRightClick(node)}
         onSelect={handleSelect}
         expandedKeys={expandedKeys}
         onExpand={(keys: TreeKey[]) => setExpandedKeys(keys)}
@@ -332,6 +448,7 @@ export default function MarkdownMenu() {
       />
       {renderModal('新建分类', 'classify')}
       {renderModal('新建文档', 'markdown')}
+      {renderRenameModal()}
     </MarkdownMenuWrapper>
   );
 }

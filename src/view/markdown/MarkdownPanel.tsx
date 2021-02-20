@@ -47,7 +47,8 @@ export default function MarkdownPanel() {
           'markdown',
           `${state.openMdId}.md`
         );
-        const text = (await fs.promises.readFile(mdPath)).toString() || '';
+        const textBuf = await fs.promises.readFile(mdPath);
+        const text = textBuf.toString() || '';
         setMdContent(text);
       } catch (error) {
         message.error('文件可能已损坏，加载失败');
@@ -68,6 +69,8 @@ export default function MarkdownPanel() {
         `${state.openMdId}.md`
       );
       await fs.promises.writeFile(mdPath, text);
+      // 写入磁盘之后需要更新视图，否则在切换到空文件时会有不渲染的bug
+      setMdContent(text);
     } catch (error) {
       message.error('文件可能已损坏，保存失败');
       console.log('Override markdown error: ', error);
