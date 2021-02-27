@@ -1,12 +1,14 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useContext } from 'react';
 import { Transformer } from 'markmap-lib';
 import * as markmap from 'markmap-view';
 import * as fs from 'fs';
 import * as path from 'path';
 import { Spin } from 'antd';
 import styled from '@emotion/styled';
-import { CustomEventTarget, SvgSizeType } from '../../typings/mindmap';
+import { SvgSizeType } from '../../typings/mindmap';
 import useResize from '../../hooks/useResize';
+import useNewWindow from '../../hooks/useNewWindow';
+import { MdContext } from '../../context/markdownContext';
 
 const MindmapPanelWrapper = styled.div`
   flex: 1;
@@ -22,86 +24,84 @@ const MindmapPanelWrapper = styled.div`
   justify-content: center;
 `;
 
-const { BrowserWindow } = require('electron').remote;
+// md base路径
+const mdBasePath = path.join(__dirname, '..', 'assets', 'docs', 'markdown');
 
-const markdownPath = path.join(__dirname, '..', 'assets', 'docs', 'mindmap.md');
-const markdown = fs.readFileSync(markdownPath).toString();
-
-// transform markdown and get assets
+// mindmap 转换器
 const transformer = new Transformer();
-const { root } = transformer.transform(markdown);
+const { Markmap } = markmap;
 
+// 重新渲染延时器
 let timer: any;
 
 export default function MindmapPanel() {
-  const [svgSize, setSvgSize] = useState({} as SvgSizeType);
-  const [spinning, setSpinning] = useState(false);
+  const [svgSize, setSvgSize] = useState({} as SvgSizeType); // mindmap svg 尺寸
+  const [spinning, setSpinning] = useState(false); // loading
   const mindmapRef = useRef<SVGSVGElement>(null);
+  const { state } = useContext(MdContext);
 
-  const { Markmap } = markmap;
-  const initMindmap = (ele: SVGSVGElement | null, options: any) => {
+  // 设置 svg 尺寸
+  const setSvg = () => {
+    const svgH = window.innerHeight - 50;
+    const svgW = window.innerWidth - 400;
+    const newSvgSize = { width: `${svgW}px`, height: `${svgH}px` };
+    setSvgSize(newSvgSize);
+  };
+
+  // 绘制 mindmap
+  const setMindmap = () => {
+    if (!state.openMdId) return;
+    const ele = mindmapRef.current;
     if (ele !== null) {
       if (ele.children.length !== 0) {
         ele.innerHTML = '';
       }
-      Markmap.create(ele, options, root);
+      const mdPath = path.join(mdBasePath, `${state.openMdId}.md`);
+      const md = fs.readFileSync(mdPath).toString();
+      const { root } = transformer.transform(md);
+      Markmap.create(ele, {}, root);
       setSpinning(false);
     }
   };
 
+  // 文档变更时绘制 mindmap
+  useEffect(() => {
+    setSvg();
+    setTimeout(() => {
+      setMindmap();
+    }, 0);
+  }, [state.openMdId]);
+
+  // 窗口缩放重新渲染 mindmap
   const resizeListener = () => {
-    const svgH = window.innerHeight - 50;
-    const svgW = window.innerWidth - 400;
-    const newSvgSize = { width: `${svgW}px`, height: `${svgH}px` };
-    setSvgSize(newSvgSize);
-    if (timer) {
-      clearTimeout(timer);
-    }
+    if (timer) clearTimeout(timer);
     setSpinning(true);
+    setSvg();
     timer = setTimeout(() => {
-      initMindmap(mindmapRef.current, {});
+      setMindmap();
     }, 1000);
   };
+  useResize(resizeListener, [state.openMdId]);
 
-  useResize(resizeListener);
+  // 新窗口打开链接
+  useNewWindow();
 
-  useEffect(() => {
-    const svgH = window.innerHeight - 50;
-    const svgW = window.innerWidth - 400;
-    const newSvgSize = { width: `${svgW}px`, height: `${svgH}px` };
-    setSvgSize(newSvgSize);
-    setTimeout(() => {
-      initMindmap(mindmapRef.current, {});
-    }, 0);
-  }, []);
+  // 渲染 mindmap
+  const renderMindmap = () => (
+    <Spin spinning={spinning}>
+      <svg
+        ref={mindmapRef}
+        style={{ ...svgSize, color: 'rgb(236, 236, 236)' }}
+      />
+    </Spin>
+  );
 
-  const handleBeforeunload = (e: BeforeUnloadEvent) => {
-    const ele = (e.target as CustomEventTarget).activeElement;
-    if (ele?.nodeName === 'A') {
-      e.returnValue = '';
-      const { href } = ele;
-      if (!href) return;
-      const localScheme = href.startsWith('file://');
-      if (!localScheme) {
-        const win = new BrowserWindow({ width: 800, height: 600 });
-        win.loadURL(href);
-      }
-    }
-  };
-  useEffect(() => {
-    window.addEventListener('beforeunload', handleBeforeunload);
-    return () => {
-      window.removeEventListener('beforeunload', handleBeforeunload);
-    };
-  }, []);
+  // 渲染空数据
+  const renderEmpty = () => 'Empty';
+
   return (
     <MindmapPanelWrapper>
-      <Spin spinning={spinning}>
-        <svg
-          ref={mindmapRef}
-          style={{ ...svgSize, color: 'rgb(236, 236, 236)' }}
-        />
-      </Spin>
+      {state.openMdId ? renderMindmap() : renderEmpty()}
     </MindmapPanelWrapper>
   );
 }

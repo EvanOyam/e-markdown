@@ -122,7 +122,7 @@ export default function TodoList(todoListProps: TodoListProps) {
   // 窗口变化时刷新高度
   useResize(() => {
     handleScrollH();
-  });
+  }, []);
   // ****** rerender 刷新 table 可滚动高度 ******
 
   // ****** 初始化数据 ******
