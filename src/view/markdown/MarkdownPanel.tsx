@@ -1,11 +1,11 @@
 import styled from '@emotion/styled';
 import React, { useContext, useEffect, useState } from 'react';
-import { FolderOpenOutlined } from '@ant-design/icons';
 import * as path from 'path';
 import * as fs from 'fs';
 import { message } from 'antd';
 import Editor from '../../components/Editor';
 import { MdContext } from '../../context/markdownContext';
+import Empty from '../../components/Empty';
 
 const MarkdownPanelWrapper = styled.div`
   flex: 1;
@@ -16,19 +16,6 @@ const MarkdownPanelWrapper = styled.div`
   overflow-y: scroll;
   height: 100vh;
   padding: 16px;
-`;
-
-const EmptyWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  width: 100%;
-  height: 100%;
-  h2 {
-    color: rgb(184, 184, 184, 0.5);
-    margin-top: 12px;
-  }
 `;
 
 export default function MarkdownPanel() {
@@ -89,20 +76,9 @@ export default function MarkdownPanel() {
     );
   };
 
-  const renderEmpty = () => {
-    return (
-      <EmptyWrapper>
-        <FolderOpenOutlined
-          style={{ fontSize: '64px', color: 'rgb(184, 184, 184,0.5)' }}
-        />
-        <h2>请选择文档</h2>
-      </EmptyWrapper>
-    );
-  };
-
   return (
     <MarkdownPanelWrapper>
-      {state.openMdId ? renderEditor() : renderEmpty()}
+      {state.openMdId ? renderEditor() : <Empty />}
     </MarkdownPanelWrapper>
   );
 }
