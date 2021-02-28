@@ -4,8 +4,14 @@ import * as path from 'path';
 import * as fs from 'fs';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { atomOneDark } from 'react-syntax-highlighter/dist/esm/styles/hljs';
-import { AboutWrapper } from './about.style';
+import styled from '@emotion/styled';
 import { RenderHighlighterType } from '../../typings/about';
+
+const AboutWrapper = styled.div`
+  padding: 36px;
+  height: 100vh;
+  overflow-y: scroll;
+`;
 
 const aboutMdPath = path.join(__dirname, '..', 'assets', 'docs', 'about.md');
 const aboutMd = fs.readFileSync(aboutMdPath).toString();

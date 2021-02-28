@@ -37,11 +37,12 @@ export const ChartPanelWrapper = styled.div`
   height: 100vh;
   overflow-y: scroll;
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 `;
 
-export const ChartOuterWrapper = styled.div`
-  /* background-color: yellowgreen; */
-`;
+export const ChartOuterWrapper = styled.div``;
 
 export const ChartTitle = styled.h3`
   padding: 12px;

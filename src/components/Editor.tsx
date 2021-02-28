@@ -1,6 +1,7 @@
 import React from 'react';
 import SimpleMDE from 'react-simplemde-editor';
 import * as EasyMDE from 'easymde';
+import hljs from 'highlight.js';
 import { EditorProps, ToolbarButton } from '../typings/editor';
 
 // todo fix: 分屏时闪烁的 bug
@@ -19,6 +20,10 @@ export default function Editor(props: EditorProps) {
   const options: EasyMDE.Options = {
     autoDownloadFontAwesome: false,
     maxHeight: maxHeight || '200px',
+    renderingConfig: {
+      codeSyntaxHighlighting: true,
+      hljs,
+    },
   };
 
   const toolbar: Array<

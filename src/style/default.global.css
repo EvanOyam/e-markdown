@@ -2,6 +2,7 @@
 @import '~react-day-picker/lib/style.css';
 @import '~easymde/dist/easymde.min.css';
 @import '~github-markdown-css';
+@import '~highlight.js/styles/atom-one-dark.css';
 
 h1,
 h2,
@@ -257,6 +258,13 @@ tr.ant-table-expanded-row:hover > td,
 .editor-toolbar.fullscreen::before,
 .editor-toolbar.fullscreen::after {
   background: #272b31 !important;
+}
+
+.editor-preview pre {
+  color: rgb(171, 178, 191);
+  background: rgb(55, 60, 68);
+  padding: 16px;
+  border-radius: 4px;
 }
 
 .simple-mde-without-border > .EasyMDEContainer > .editor-toolbar {
