@@ -1,8 +1,9 @@
 import fs from 'fs';
 import path from 'path';
-import initSqlJs from 'sql.js';
 import { FieldsType } from '../typings/database';
 import { mdFields, mdClassifyFields, todoFields } from './fields';
+
+const initSqlJs = require('sql.js/dist/sql-asm');
 
 const handleDBPath = async (dbName: string) => {
   const dirPath = path.join(__dirname, '..', '..', 'assets', 'data');
@@ -11,9 +12,8 @@ const handleDBPath = async (dbName: string) => {
   return path.join(dirPath, `${dbName}.sqlite`);
 };
 
-export const createDB = async (dbPath: string) => {
+export const createDB = async (SQL: any, dbPath: string) => {
   try {
-    const SQL = await initSqlJs({});
     const db = new SQL.Database();
     const data = db.export();
     const buffer = Buffer.from(data);
@@ -46,7 +46,7 @@ export const initDB = async () => {
     const SQL = await initSqlJs({});
     const dbPath = await handleDBPath('database');
     const hasDB = fs.existsSync(dbPath);
-    if (!hasDB) await createDB(dbPath);
+    if (!hasDB) await createDB(SQL, dbPath);
     const dbFileBuffer = await fs.promises.readFile(dbPath);
     const db = new SQL.Database(dbFileBuffer);
     createTable(db, 'todo', todoFields);

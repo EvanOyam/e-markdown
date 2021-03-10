@@ -22,6 +22,7 @@ export default {
         },
       },
     ],
+    noParse: /node_modules\/sql\.js\/dist\/sql-asm\.js$/,
   },
 
   output: {
