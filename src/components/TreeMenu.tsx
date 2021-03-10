@@ -91,20 +91,24 @@ export default function MarkdownMenu() {
   // 获取原始数据
   useEffect(() => {
     (async () => {
-      let classify = await ipcRenderer.invoke('getMdClassify', routerType);
-      if (!classify || classify.length === 0) {
-        const createTime = +new Date();
-        const params = {
-          id: uuidv4().replace(/-/g, ''),
-          name: '默认分类',
-          type: routerType,
-          createdAt: createTime,
-          updatedAt: createTime,
-        };
-        await ipcRenderer.invoke('createMdClassify', params);
-        classify = await ipcRenderer.invoke('getMdClassify', routerType);
+      try {
+        let classify = await ipcRenderer.invoke('getMdClassify', routerType);
+        if (!classify || classify.length === 0) {
+          const createTime = +new Date();
+          const params = {
+            id: uuidv4().replace(/-/g, ''),
+            name: '默认分类',
+            type: routerType,
+            createdAt: createTime,
+            updatedAt: createTime,
+          };
+          await ipcRenderer.invoke('createMdClassify', params);
+          classify = await ipcRenderer.invoke('getMdClassify', routerType);
+        }
+        setMenuData(classify);
+      } catch (error) {
+        console.log('Init TreeMenu error: ', error);
       }
-      setMenuData(classify);
     })();
   }, []);
 

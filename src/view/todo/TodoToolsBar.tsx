@@ -50,17 +50,21 @@ export default function TodoToolsBar() {
       dispatch({ type: 'setTodoListData', value: [] });
       dispatch({ type: 'setFinishedListData', value: [] });
     } else {
-      const todoList = await ipcRenderer.invoke('searchTodo', value, 0);
-      const finishedList = await ipcRenderer.invoke('searchTodo', value, 1);
-      const finishedListKeys = finishedList.map(
-        (record: TodoType) => record.id
-      );
-      dispatch({
-        type: 'setSelectedFinishedRowsKeys',
-        value: finishedListKeys,
-      });
-      dispatch({ type: 'setTodoListData', value: todoList });
-      dispatch({ type: 'setFinishedListData', value: finishedList });
+      try {
+        const todoList = await ipcRenderer.invoke('searchTodo', value, 0);
+        const finishedList = await ipcRenderer.invoke('searchTodo', value, 1);
+        const finishedListKeys = finishedList.map(
+          (record: TodoType) => record.id
+        );
+        dispatch({
+          type: 'setSelectedFinishedRowsKeys',
+          value: finishedListKeys,
+        });
+        dispatch({ type: 'setTodoListData', value: todoList });
+        dispatch({ type: 'setFinishedListData', value: finishedList });
+      } catch (error) {
+        console.log('Search todo error: ', error);
+      }
     }
   };
 

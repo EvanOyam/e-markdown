@@ -48,8 +48,12 @@ export default function Classify() {
 
   useEffect(() => {
     (async () => {
-      const classifyCount = await ipcRenderer.invoke('countTodo');
-      dispatch({ type: 'setClassifyCount', value: classifyCount });
+      try {
+        const classifyCount = await ipcRenderer.invoke('countTodo');
+        dispatch({ type: 'setClassifyCount', value: classifyCount });
+      } catch (error) {
+        console.log('Get classify count error: ', error);
+      }
     })();
   }, []);
 
