@@ -4,7 +4,6 @@ import { HashRouter as Router, Switch, Route } from 'react-router-dom';
 import { ConfigProvider } from 'antd';
 import { BulbTwoTone } from '@ant-design/icons';
 import Menu from './components/Menu';
-import Dashboard from './view/dashboard/Index';
 import Todo from './view/todo/Index';
 import Markdown from './view/markdown/Index';
 import Mindmap from './view/mindmap/Index';
@@ -32,7 +31,7 @@ export default function App() {
               <Route path="/mindmap" component={Mindmap} />
               <Route path="/todo" component={Todo} />
               <Route path="/markdown" component={Markdown} />
-              <Route path="/" component={Dashboard} />
+              <Route path="/" component={Todo} />
             </Switch>
           </Router>
         </ContainerLayout>

@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import {
-  DashboardFilled,
   DiffFilled,
   FileMarkdownFilled,
   BulbFilled,
@@ -11,30 +10,24 @@ import { MenuLayout, Icon, MenuItem, ActivedMark } from '../style/layout.style';
 const menuItemList = [
   {
     id: 1,
-    text: '看板',
-    icon: <DashboardFilled />,
-    color: '#727CA9',
-  },
-  {
-    id: 2,
     text: '任务',
     icon: <DiffFilled />,
     color: '#E44259',
   },
   {
-    id: 3,
+    id: 2,
     text: '笔记',
     icon: <FileMarkdownFilled />,
     color: '#4CAF4F',
   },
   {
-    id: 4,
+    id: 3,
     text: '脑图',
     icon: <BulbFilled />,
     color: '#5aabda',
   },
   {
-    id: 5,
+    id: 4,
     text: '关于',
     icon: <InfoCircleFilled />,
     color: '#F07E4A',
@@ -42,8 +35,7 @@ const menuItemList = [
 ];
 
 enum RouterEnum {
-  '/' = 1,
-  '/todo',
+  '/todo' = 1,
   '/markdown',
   '/mindmap',
   '/about',
