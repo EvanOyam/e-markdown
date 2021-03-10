@@ -5,7 +5,6 @@ import {
   BrowserWindow,
   MenuItemConstructorOptions,
 } from 'electron';
-import store from './store';
 
 interface DarwinMenuItemConstructorOptions extends MenuItemConstructorOptions {
   selector?: string;
@@ -163,24 +162,6 @@ export default class MenuBuilder {
     const subMenuDev: MenuItemConstructorOptions = {
       label: 'Dev',
       submenu: [
-        {
-          label: '强制清空 Todo 数据',
-          click: () => {
-            store.delete('todo');
-          },
-        },
-        {
-          label: '强制清空 Markdown 数据',
-          click: () => {
-            store.delete('markdown');
-          },
-        },
-        {
-          label: '强制清空 Mindmap 数据',
-          click: () => {
-            store.delete('mindmap');
-          },
-        },
         {
           label: '审查元素',
           click: () => {

@@ -15,7 +15,6 @@ import { app, BrowserWindow, ipcMain, shell } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
-import store from './store';
 import { initDB } from './db/index';
 import {
   createMd,
@@ -34,16 +33,6 @@ import {
   countTodo,
   searchTodo,
 } from './db/markdown';
-
-ipcMain.handle('getStoreValue', (event, key) => {
-  return store.get(key);
-});
-ipcMain.handle('setStoreValue', (event, key, value) => {
-  return store.set(key, value);
-});
-ipcMain.handle('delStoreValue', (event, key) => {
-  return store.delete(key);
-});
 
 (async () => {
   const db = await initDB();
