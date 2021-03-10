@@ -21,20 +21,22 @@ enum TodoClassify {
 }
 
 export default function TodoPanel() {
-  const { state } = useContext(TodoContext);
-  const [title, setTitle] = useState('');
+  const { state, dispatch } = useContext(TodoContext);
   // todo feat: 加入当日代办任务数
   useDeepCompareEffect(() => {
     const { type, value } = state.actived;
     if (type === 'date') {
-      setTitle(value.toString());
-    } else {
-      setTitle(TodoClassify[value as number]);
+      dispatch({ type: 'setHeaderTitle', value: value.toString() });
+    } else if (type === 'classify') {
+      dispatch({
+        type: 'setHeaderTitle',
+        value: TodoClassify[value as number],
+      });
     }
   }, [state.actived]);
   return (
     <TodoPanelWrapper>
-      <TodoToolsBar title={title} />
+      <TodoToolsBar />
       <TodoList actived={state.actived} />
     </TodoPanelWrapper>
   );

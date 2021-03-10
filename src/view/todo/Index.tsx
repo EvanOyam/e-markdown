@@ -4,7 +4,7 @@ import moment from 'moment';
 import TodoMenu from './TodoMenu';
 import TodoPanel from './TodoPanel';
 import { TodoContextProvider, reducer } from '../../context/todoContext';
-import { TodoMeta } from '../../typings/todo';
+import { TodoType } from '../../typings/database';
 
 const TodoWrapper = styled.div`
   width: 100%;
@@ -15,14 +15,17 @@ const TodoWrapper = styled.div`
 export default function Todo() {
   const [state, dispatch] = useReducer(reducer, {
     tableScrollH: 0,
-    todoListData: [] as TodoMeta[],
-    finishedListData: [] as TodoMeta[],
+    todoListData: [] as TodoType[],
+    finishedListData: [] as TodoType[],
     selectedFinishedRowsKeys: [] as (string | number)[],
     actived: {
       type: 'date',
       value: moment().format('YYYY-MM-DD'),
     },
-    filterText: '',
+    todoDays: [],
+    currentMonth: moment().valueOf(),
+    classifyCount: [],
+    headerTitle: '',
   });
 
   return (

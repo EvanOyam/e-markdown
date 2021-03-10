@@ -3,14 +3,13 @@ import { Table, Modal } from 'antd';
 import { DeleteOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import styled from '@emotion/styled';
 import { ipcRenderer } from 'electron';
-import * as fs from 'fs';
-import * as path from 'path';
 import useDeepCompareEffect from 'use-deep-compare-effect';
-import { TodoListProps, TodoMeta, TodoTableType } from '../../typings/todo';
-import Editor from '../../components/Editor';
+import moment from 'moment';
+import { TodoListProps, TodoTableType } from '../../typings/todo';
 import useResize from '../../hooks/useResize';
 import { TodoContext } from '../../context/todoContext';
 import TodoDetail from './TodoDetail';
+import { TodoType } from '../../typings/database';
 
 const { Column } = Table;
 const { confirm } = Modal;
@@ -49,21 +48,14 @@ const IconWrapper = styled.div`
 
 // todo refactor: list 用 memo 渲染
 export default function TodoList(todoListProps: TodoListProps) {
-  const { type, value } = todoListProps.actived;
   const { state, dispatch } = useContext(TodoContext);
   const todoListRowSelection = {
-    onSelect: async (record: TodoMeta) => {
+    onSelect: async (record: TodoType) => {
       try {
-        const storeTodoData: TodoMeta = await ipcRenderer.invoke(
-          'getStoreValue',
-          `todo.data.${record.id}`
-        );
-        storeTodoData.status = 1;
-        await ipcRenderer.invoke(
-          'setStoreValue',
-          `todo.data.${record.id}`,
-          storeTodoData
-        );
+        // 更新状态
+        await ipcRenderer.invoke('updateTodo', record.id, {
+          status: 1,
+        });
         const newKeys = [...state.selectedFinishedRowsKeys, record.id];
         const newTodoList = state.todoListData.filter(
           (item) => item.id !== record.id
@@ -72,6 +64,10 @@ export default function TodoList(todoListProps: TodoListProps) {
         dispatch({ type: 'setSelectedFinishedRowsKeys', value: newKeys });
         dispatch({ type: 'setTodoListData', value: newTodoList });
         dispatch({ type: 'setFinishedListData', value: newFinishedList });
+
+        // 更新分类
+        const classifyCount = await ipcRenderer.invoke('countTodo');
+        dispatch({ type: 'setClassifyCount', value: classifyCount });
       } catch (error) {
         console.log('Change todo status to "finished" error: ', error);
       }
@@ -79,24 +75,22 @@ export default function TodoList(todoListProps: TodoListProps) {
     selectedRowKeys: [],
   };
   const finishedListRowSelection = {
-    onSelect: async (record: TodoMeta) => {
+    onSelect: async (record: TodoType) => {
       try {
-        const storeTodoData: TodoMeta = await ipcRenderer.invoke(
-          'getStoreValue',
-          `todo.data.${record.id}`
-        );
-        storeTodoData.status = 0;
-        await ipcRenderer.invoke(
-          'setStoreValue',
-          `todo.data.${record.id}`,
-          storeTodoData
-        );
+        // 更新状态
+        await ipcRenderer.invoke('updateTodo', record.id, {
+          status: 0,
+        });
         const newTodoList = state.todoListData.concat(record);
         const newFinishedList = state.finishedListData.filter(
           (item) => item.id !== record.id
         );
         dispatch({ type: 'setFinishedListData', value: newFinishedList });
         dispatch({ type: 'setTodoListData', value: newTodoList });
+
+        // 更新分类
+        const classifyCount = await ipcRenderer.invoke('countTodo');
+        dispatch({ type: 'setClassifyCount', value: classifyCount });
       } catch (error) {
         console.log('Change todo status to "todo" error: ', error);
       }
@@ -125,110 +119,95 @@ export default function TodoList(todoListProps: TodoListProps) {
   }, []);
   // ****** rerender 刷新 table 可滚动高度 ******
 
+  const getTodoList = async () => {
+    try {
+      const { actived } = todoListProps;
+      if (!actived.type) return;
+      const query = {} as Partial<TodoType>;
+      if (actived.type === 'date') {
+        query.date = actived.value;
+      } else if (actived.type === 'classify') {
+        query.classify = actived.value;
+      }
+      const todoList: TodoType[] = await ipcRenderer.invoke(
+        'getTodoList',
+        ['*'],
+        {
+          ...query,
+          status: 0,
+        }
+      );
+      const finishedList: TodoType[] = await ipcRenderer.invoke(
+        'getTodoList',
+        ['*'],
+        {
+          ...query,
+          status: 1,
+        }
+      );
+      const finishedListKeys = finishedList.map((record) => record.id);
+      dispatch({
+        type: 'setSelectedFinishedRowsKeys',
+        value: finishedListKeys,
+      });
+      dispatch({ type: 'setTodoListData', value: todoList });
+      dispatch({ type: 'setFinishedListData', value: finishedList });
+    } catch (error) {
+      console.log('Get todo list error: ', error);
+    }
+  };
+
   // ****** 初始化数据 ******
   useDeepCompareEffect(() => {
     (async () => {
-      try {
-        const todoIndex = await ipcRenderer.invoke(
-          'getStoreValue',
-          `todo.${type}Index.${value}`
-        );
-        // 不存在索引，清空数据
-        if (!todoIndex) {
-          dispatch({ type: 'setSelectedFinishedRowsKeys', value: [] });
-          dispatch({ type: 'setTodoListData', value: [] });
-          dispatch({ type: 'setFinishedListData', value: [] });
-          return;
-        }
-        const todoListPromise = [];
-        for await (const id of todoIndex) {
-          const todoData = ipcRenderer.invoke(
-            'getStoreValue',
-            `todo.data.${id}`
-          );
-          if (todoData) todoListPromise.push(todoData);
-        }
-        // 过滤 undefined ，筛选词，或其他异常数据
-        const storeTodoList = (await Promise.all(todoListPromise)).filter(
-          (item: TodoMeta) => {
-            if (state.filterText) {
-              return (
-                item &&
-                item.status === 0 &&
-                item.title.indexOf(state.filterText) !== -1
-              );
-            }
-            return item && item.status === 0;
-          }
-        );
-        const storeFinishedList = (await Promise.all(todoListPromise)).filter(
-          (item: TodoMeta) => {
-            if (state.filterText) {
-              return (
-                item &&
-                item.status === 1 &&
-                item.title.indexOf(state.filterText) !== -1
-              );
-            }
-            return item && item.status === 1;
-          }
-        );
-        const finishedListKeys = storeFinishedList.map((record) => record.id);
-        dispatch({
-          type: 'setSelectedFinishedRowsKeys',
-          value: finishedListKeys,
-        });
-        dispatch({ type: 'setTodoListData', value: storeTodoList });
-        dispatch({
-          type: 'setFinishedListData',
-          value: storeFinishedList,
-        });
-      } catch (error) {
-        console.log('Initialization todo list error: ', error);
-      }
+      await getTodoList();
     })();
-  }, [todoListProps, state.filterText]);
+  }, [todoListProps]);
   // ****** 初始化数据 ******
 
-  const renderDesc = (record: TodoMeta) => {
+  const renderDesc = (record: TodoType) => {
     return <TodoDetail todoId={record.id} />;
   };
 
   const renderTable = (tableInfo: TodoTableType) => {
     const { tableData, rowSelection } = tableInfo;
 
-    const handleDelete = async (record: TodoMeta) => {
-      const { id, status } = record;
+    const handleDelete = async (record: TodoType) => {
+      const { id } = record;
       try {
-        // 删除持久化记录
-        const todoPath = path.join(__dirname, '..', 'assets', 'docs', 'todo');
-        const mdPath = path.join(todoPath, `${id}.md`);
-        await fs.promises.unlink(mdPath);
+        // 删除记录
+        await ipcRenderer.invoke('deleteTodo', id);
       } catch (error) {
         console.log('Delete todo error: ', error);
       }
+      // 重新获取数据
       try {
-        // 更新视图列表
-        await ipcRenderer.invoke('delStoreValue', `todo.data.${id}`);
-        const newList =
-          status === 0
-            ? state.todoListData.filter((data) => data.id !== id)
-            : state.finishedListData.filter((data) => data.id !== id);
-        const action = status === 0 ? 'setTodoListData' : 'setFinishedListData';
-        dispatch({ type: action, value: newList });
-        // 如果是已完成的 list，还需要更新 keys 列表
-        if (status === 1) {
-          const newKeys = state.selectedFinishedRowsKeys.filter(
-            (key) => key !== record.id
-          );
-          dispatch({ type: 'setSelectedFinishedRowsKeys', value: newKeys });
-        }
+        // 获取数据
+        await getTodoList();
+
+        // 更新日历
+        let todoDate = await ipcRenderer.invoke(
+          'getTodoDays',
+          moment(state.currentMonth).year(),
+          moment(state.currentMonth).month() + 1
+        );
+        todoDate = todoDate.map((date: Partial<TodoType>) =>
+          moment(date.dateTimestamp).format('YYYY-MM-DD')
+        );
+        dispatch({
+          type: 'setTodoDays',
+          value: [...new Set(todoDate)] as string[],
+        });
+
+        // 更新分类
+        const classifyCount = await ipcRenderer.invoke('countTodo');
+        dispatch({ type: 'setClassifyCount', value: classifyCount });
       } catch (error) {
-        console.log('Delete todo and refresh error: ', error);
+        console.log('Get TodoDays error: ', error);
       }
     };
 
-    const showDeleteConfirm = (record: TodoMeta) => {
+    const showDeleteConfirm = (record: TodoType) => {
       confirm({
         title: '删除确认',
         icon: <ExclamationCircleOutlined />,
@@ -266,7 +245,7 @@ export default function TodoList(todoListProps: TodoListProps) {
         <Column
           key="title"
           dataIndex="title"
-          render={(title, record: TodoMeta) => (
+          render={(title, record: TodoType) => (
             <LineWrapper>
               {title}
               <IconWrapper>

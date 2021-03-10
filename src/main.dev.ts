@@ -26,6 +26,13 @@ import {
   deleteMdClassify,
   renameMdClassify,
   renameMd,
+  createTodo,
+  updateTodo,
+  getTodoList,
+  deleteTodo,
+  getTodoDays,
+  countTodo,
+  searchTodo,
 } from './db/markdown';
 
 ipcMain.handle('getStoreValue', (event, key) => {
@@ -40,6 +47,27 @@ ipcMain.handle('delStoreValue', (event, key) => {
 
 (async () => {
   const db = await initDB();
+  ipcMain.handle('createTodo', (event, params) => {
+    return createTodo(db, params);
+  });
+  ipcMain.handle('updateTodo', (event, id, params) => {
+    return updateTodo(db, id, params);
+  });
+  ipcMain.handle('deleteTodo', (event, id) => {
+    return deleteTodo(db, id);
+  });
+  ipcMain.handle('countTodo', (event) => {
+    return countTodo(db);
+  });
+  ipcMain.handle('searchTodo', (event, title, status) => {
+    return searchTodo(db, title, status);
+  });
+  ipcMain.handle('getTodoList', (event, fields, query) => {
+    return getTodoList(db, fields, query);
+  });
+  ipcMain.handle('getTodoDays', (event, year, month) => {
+    return getTodoDays(db, year, month);
+  });
   ipcMain.handle('createMd', (event, params) => {
     return createMd(db, params);
   });

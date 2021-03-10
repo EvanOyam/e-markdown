@@ -1,5 +1,5 @@
-import React from 'react';
-import { List } from 'antd';
+import React, { useContext, useEffect } from 'react';
+import { List, Badge } from 'antd';
 import {
   TagsTwoTone,
   CodeTwoTone,
@@ -7,7 +7,9 @@ import {
   ProfileTwoTone,
 } from '@ant-design/icons';
 import styled from '@emotion/styled';
-import { ClassifyList, ClassifyProps } from '../../typings/todo';
+import { ipcRenderer } from 'electron';
+import { ClassifyList, ClassifyType } from '../../typings/todo';
+import { TodoContext } from '../../context/todoContext';
 
 const ClassifyWrapper = styled.div`
   padding: 16px;
@@ -41,26 +43,44 @@ const classifyList: ClassifyList[] = [
 ];
 
 // todo feat: 改为数据库后加上提醒数字
-export default function Classify(props: ClassifyProps) {
-  const { activedClassify, setActivedClassify } = props;
+export default function Classify() {
+  const { state, dispatch } = useContext(TodoContext);
+
+  useEffect(() => {
+    (async () => {
+      const classifyCount = await ipcRenderer.invoke('countTodo');
+      dispatch({ type: 'setClassifyCount', value: classifyCount });
+    })();
+  }, []);
+
+  const handleChangeClassify = (id: ClassifyType) => {
+    dispatch({
+      type: 'changeDateOrClassify',
+      value: { type: 'classify', value: id },
+    });
+  };
+
   return (
     <ClassifyWrapper>
       <List
         itemLayout="horizontal"
         dataSource={classifyList}
         split={false}
-        renderItem={(item) => (
+        renderItem={(item, index) => (
           <List.Item
             className={
-              activedClassify === item.id ? 'ant-list-item-actived' : ''
+              state.actived.type === 'classify' &&
+              state.actived.value === item.id
+                ? 'ant-list-item-actived'
+                : ''
             }
-            onClick={() => setActivedClassify(item.id)}
-            // extra={
-            //   <Badge
-            //     style={{ backgroundColor: '#5aabda' }}
-            //     count={todoNum[index]}
-            //   />
-            // }
+            onClick={() => handleChangeClassify(item.id)}
+            extra={
+              <Badge
+                style={{ backgroundColor: '#ff6767' }}
+                count={state.classifyCount[index]}
+              />
+            }
           >
             <List.Item.Meta avatar={item.icon} title={item.title} />
           </List.Item>

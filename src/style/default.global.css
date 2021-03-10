@@ -297,6 +297,10 @@ tr.ant-table-expanded-row:hover > td,
   overflow: hidden;
 }
 
+.ant-page-header-heading-left {
+  max-width: 360px;
+}
+
 .ant-tree-directory {
   background-color: #2e2e2e;
   color: #fbf8f5;

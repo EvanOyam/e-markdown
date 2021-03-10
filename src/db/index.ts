@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import initSqlJs from 'sql.js';
 import { FieldsType } from '../typings/database';
-import { mdFields, mdClassifyFields } from './fields';
+import { mdFields, mdClassifyFields, todoFields } from './fields';
 
 const handleDBPath = async (dbName: string) => {
   const dirPath = path.join(__dirname, '..', '..', 'assets', 'data');
@@ -49,6 +49,7 @@ export const initDB = async () => {
     if (!hasDB) await createDB(dbPath);
     const dbFileBuffer = await fs.promises.readFile(dbPath);
     const db = new SQL.Database(dbFileBuffer);
+    createTable(db, 'todo', todoFields);
     createTable(db, 'markdown', mdFields);
     createTable(db, 'markdownClassify', mdClassifyFields);
     return db;

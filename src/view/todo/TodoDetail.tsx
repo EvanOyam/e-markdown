@@ -11,8 +11,14 @@ export default function TodoDetail(props: TodoDetailProps) {
   useEffect(() => {
     (async () => {
       try {
-        const basePath = path.join(__dirname, '..', 'assets', 'docs', 'todo');
-        const mdPath = path.join(basePath, `${todoId}.md`);
+        const dirPath = path.join(
+          __dirname,
+          '..',
+          'assets',
+          'docs',
+          'markdown'
+        );
+        const mdPath = path.join(dirPath, `${todoId}.md`);
         const text = (await fs.promises.readFile(mdPath)).toString() || '';
         setMdContent(text);
       } catch (error) {
@@ -24,8 +30,8 @@ export default function TodoDetail(props: TodoDetailProps) {
 
   const handleSave = async (text: string) => {
     try {
-      const basePath = path.join(__dirname, '..', 'assets', 'docs', 'todo');
-      const mdPath = path.join(basePath, `${todoId}.md`);
+      const dirPath = path.join(__dirname, '..', 'assets', 'docs', 'markdown');
+      const mdPath = path.join(dirPath, `${todoId}.md`);
       await fs.promises.writeFile(mdPath, text);
     } catch (error) {
       message.error('文件可能已损坏，保存失败');

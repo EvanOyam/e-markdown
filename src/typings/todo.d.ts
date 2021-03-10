@@ -1,42 +1,7 @@
 import { ReactElement } from 'react';
+import { TodoType } from './database';
 
 type ClassifyType = 1 | 2 | 3 | 4;
-
-export interface ClassifyProps {
-  activedClassify: number;
-  setActivedClassify: (id: ClassifyType) => void;
-}
-
-export interface CustomDayPickerProps {
-  selectedDay: Date | undefined;
-  customSelectDay: (day: Date) => void;
-}
-
-// 0: 未完成 | 1: 完成
-type TodoMetaStatus = 0 | 1;
-
-// 标签枚举
-declare enum TodoClassify {
-  memo = 1,
-  work,
-  study,
-  other,
-}
-
-export interface TodoMeta {
-  id: string;
-  title: string;
-  date: number;
-  status: TodoMetaStatus;
-  alarmDate: number;
-  classify: TodoClassify;
-  path: string;
-  createdAt: number;
-}
-
-export interface TodoToolsBarProps {
-  title: string;
-}
 
 type ActivedTodoType =
   | {
@@ -46,15 +11,22 @@ type ActivedTodoType =
   | {
       type: 'classify';
       value: ClassifyType;
+    }
+  | {
+      type: '';
+      value: '';
     };
 
 export interface TodoStateType {
   tableScrollH: number;
-  todoListData: TodoMeta[];
-  finishedListData: TodoMeta[];
+  todoListData: TodoType[];
+  finishedListData: TodoType[];
   selectedFinishedRowsKeys: (string | number)[];
   actived: ActivedTodoType;
-  filterText: string;
+  todoDays: string[];
+  currentMonth: number;
+  classifyCount: number[];
+  headerTitle: string;
 }
 
 export type TodoActionType =
@@ -64,11 +36,11 @@ export type TodoActionType =
     }
   | {
       type: 'setTodoListData';
-      value: TodoMeta[];
+      value: TodoType[];
     }
   | {
       type: 'setFinishedListData';
-      value: TodoMeta[];
+      value: TodoType[];
     }
   | {
       type: 'setSelectedFinishedRowsKeys';
@@ -79,17 +51,29 @@ export type TodoActionType =
       value: ActivedTodoType;
     }
   | {
-      type: 'setFilterText';
+      type: 'setTodoDays';
+      value: string[];
+    }
+  | {
+      type: 'setCurrentMonth';
+      value: number;
+    }
+  | {
+      type: 'setClassifyCount';
+      value: number[];
+    }
+  | {
+      type: 'setHeaderTitle';
       value: string;
     };
 
 interface RowSelectionType {
-  onSelect: (record: TodoMeta) => void;
+  onSelect: (record: TodoType) => void;
   selectedRowKeys: (string | number)[];
 }
 
 export interface TodoTableType {
-  tableData: TodoMeta[];
+  tableData: TodoType[];
   rowSelection: RowSelectionType;
 }
 
